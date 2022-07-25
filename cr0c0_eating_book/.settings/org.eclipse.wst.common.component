@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="cr0c0_eating_book">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <property name="context-root" value="cr0c0_eating_book"/>
+        <property name="java-output-path" value="/cr0c0_eating_book/bin"/>
+    </wb-module>
+</project-modules>
