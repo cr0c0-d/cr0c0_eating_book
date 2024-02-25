@@ -16,10 +16,10 @@
     <h1 class="mt-4 mb-4">책 검색</h1>
 
     <!-- 글 작성 폼 -->
-    <form class="form-inline my-2 my-lg-0" th:action="@{/api/books}" method="GET">
+    <form class="form-inline my-2 my-lg-0" th:action="@{/api/books}" method="POST">
         <div class="form-group">
             <!-- 검색 카테고리 드롭다운 -->
-            <select class="custom-select mr-sm-2" id="queryType">
+            <select class="custom-select mr-sm-2" name="queryType">
                 <option value="Keyword" selected>제목+저자</option>
                 <option value="Title">제목</option>
                 <option value="Author">저자</option>
@@ -27,7 +27,7 @@
                 <!-- 추가적인 카테고리는 이곳에 추가합니다. -->
             </select>
 
-            <input type="text" class="form-control mr-sm-2" id="keyword" placeholder="검색어를 입력하세요">
+            <input type="text" class="form-control mr-sm-2" name="keyword" th:value="${ result } ? ${ result.query } : ''" placeholder="검색어를 입력하세요">
             <button type="submit" class="btn btn-primary my-2 my-sm-0">검색</button>
         </div>
     </form>
@@ -38,7 +38,7 @@
     <!-- 글 목록 -->
     <div th:if="${result} != null">
 
-    <h2 class="mt-4 mb-4">글 목록</h2>
+    <h2 class="mt-4 mb-4">책 목록</h2>
     <div class="list-group" th:each="item : ${result.item}">
         <a th:href="${item.link}" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
@@ -48,7 +48,7 @@
 
             </div>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <img th:src="${item.cover}" class="img-fluid rounded" alt="게시물 이미지">
                 </div>
                 <div class="col-md-9">

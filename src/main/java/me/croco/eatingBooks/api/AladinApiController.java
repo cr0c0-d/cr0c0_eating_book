@@ -22,10 +22,9 @@ public class AladinApiController {
 
     private final AladinApiService aladinApiService;
 
-    @GetMapping("/api/books")
-    public String searchBooks(String keyword, String queryType, Model model) {
-        System.out.println(keyword + " :::: " + queryType);
-        AladinBooksResponse result = aladinApiService.searchBooks(keyword, queryType);
+    @PostMapping("/api/books")
+    public String searchBooks(AladinFindRequest request, Model model) {
+        AladinBooksResponse result = aladinApiService.searchBooks(request);
         model.addAttribute("result", result);
         return "searchBooks";
     }

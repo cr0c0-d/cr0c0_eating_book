@@ -115,9 +115,9 @@ public class AladinApiService {
     }
 
 
-    public AladinBooksResponse searchBooks(String keyword, String queryType) {
+    public AladinBooksResponse searchBooks(AladinFindRequest request) {
 
-        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey + "&Query=" + keyword + "&QueryType=" + queryType + "&output=js");
+        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey + "&Query=" + request.getKeyword().replace(" ", "+") + "&QueryType=" + request.getQueryType() + "&output=js");
         String result = getHttpResponse(httpURLConnection);
 
         //ObjectMapper mapper = new ObjectMapper();
