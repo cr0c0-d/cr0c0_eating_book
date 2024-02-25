@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부트스트랩을 이용한 게시판</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">사이트 이름</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">홈 <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">게시판</a>
+            </li>
+            <!-- 추가적인 메뉴는 이곳에 반복해서 추가합니다. -->
+        </ul>
+
+        <!-- 검색 창 -->
+        <form class="form-inline my-2 my-lg-0">
+            <select class="custom-select mr-sm-2" id="searchCategory">
+                <option selected>검색 카테고리 선택</option>
+                <option value="title">제목</option>
+                <option value="content">내용</option>
+                <!-- 추가적인 카테고리는 이곳에 추가합니다. -->
+            </select>
+            <input class="form-control mr-sm-2" type="search" id="searchKeyword" placeholder="검색어를 입력하세요" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="submitSearch()">검색</button>
+        </form>
+
+        <!-- 로그인 사용자 정보 -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+        <span class="navbar-text">
+          로그인 사용자: John Doe <!-- 사용자 이름을 여기에 넣어주세요 -->
+        </span>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="mt-4 mb-4">게시판</h1>
+
+    <!-- 글 작성 폼 -->
+    <form>
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요">
+        </div>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea class="form-control" id="content" rows="3" placeholder="내용을 입력하세요"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">글 작성</button>
+    </form>
+
+    <hr>
+
+    <!-- 글 목록 -->
+    <h2 class="mt-4 mb-4">글 목록</h2>
+    <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">게시물 제목</h5>
+                <small>작성일: 2024-02-25</small>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <img src="../image/croco.jpg" class="img-fluid rounded" alt="게시물 이미지">
+                </div>
+                <div class="col-md-9">
+                    <p class="mb-1">게시물 내용의 일부분...</p>
+                </div>
+            </div>
+        </a>
+        <!-- 추가적인 글목록은 이곳에 반복해서 추가합니다. -->
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function submitSearch() {
+      var category = document.getElementById("searchCategory").value;
+      var keyword = document.getElementById("searchKeyword").value;
+      // 이제 선택된 카테고리와 검색어를 사용하여 검색을 수행하면 됩니다.
+      console.log("검색 카테고리:", category);
+      console.log("검색어:", keyword);
+      // 여기에 검색 로직을 추가하세요.
+    }
+</script>
+
+</body>
+</html>

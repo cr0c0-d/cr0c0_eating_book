@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부트스트랩을 이용한 게시판</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- 네비게이션 바 -->
+<div id="navbar"></div>
+<!-- 네비게이션 바 -->
+
+<div class="container">
+    <h1 class="mt-4 mb-4">책 검색</h1>
+
+    <!-- 글 작성 폼 -->
+    <form>
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요">
+        </div>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea class="form-control" id="content" rows="3" placeholder="내용을 입력하세요"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">글 작성</button>
+    </form>
+
+    <hr>
+
+    <!-- 글 목록 -->
+    <h2 class="mt-4 mb-4">글 목록</h2>
+    <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">게시물 제목</h5>
+                <small>작성일: 2024-02-25</small>
+            </div>
+            <p class="mb-1">게시물 내용의 일부분...</p>
+        </a>
+        <!-- 추가적인 글목록은 이곳에 반복해서 추가합니다. -->
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // 네비게이션 바를 동적으로 로드하는 함수
+    $(function () {
+        $("#navbar").load("navbar.html");
+    });
+</script>
+
+</body>
+</html>
