@@ -13,6 +13,8 @@ public class AladinFindRequest {
 
     private String keyword;
     private String queryType;
+    private int start;
+
 
 
 

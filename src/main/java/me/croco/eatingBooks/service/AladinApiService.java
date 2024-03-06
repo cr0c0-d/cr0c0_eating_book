@@ -117,9 +117,23 @@ public class AladinApiService {
 
     public AladinBooksResponse searchBooks(AladinFindRequest request) {
         String keyword = request.getKeyword();
-        keyword = keyword.contains(" ") ? keyword.replace(" ", "+") : keyword;
+        keyword = keyword.contains(" ") ? keyword.replace(" ", "+") : keyword;  // 검색어에 공백 존재시 '+'로 바꿔서 검색
 
-        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey + "&Query=" + keyword + "&QueryType=" + request.getQueryType() + "&output=js");
+        int start = request.getStart();
+        start = start == 0 ? 1 : start;
+
+        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey
+                + "&Query=" + keyword
+                + "&QueryType=" + request.getQueryType()
+                + "&Start=" +  start    // 페이지
+                
+                + "&Sort=SalesPoint"    // 정렬 순서(판매량 순)
+                + "&Version=20131101"   // 검색 API 버전
+                + "&Cover=Big"  // 표지 이미지 크기
+                + "&MaxResults=10"  // 한 페이지 최대 출력 개수
+                + "&SearchTarget=Book"  // 검색 대상 : 도서
+                + "&output=js"   // 검색 결과 : JSON
+        );
         String result = getHttpResponse(httpURLConnection);
 
         //ObjectMapper mapper = new ObjectMapper();
