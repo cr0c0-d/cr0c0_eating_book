@@ -25,8 +25,6 @@ public class AladinApiController {
 
     @PostMapping("/api/books")
     public ResponseEntity<AladinBooksResponse> searchBooks(@RequestBody AladinFindRequest request) {
-        System.out.println("Keyword : " + request.getKeyword());
-        System.out.println("QueryType : " + request.getQueryType());
         return ResponseEntity.ok()
                 .body(aladinApiService.searchBooks(request));
     }
