@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.dto.AladinBooksResponse;
 import me.croco.eatingBooks.dto.AladinFindRequest;
 import me.croco.eatingBooks.service.AladinApiService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,23 +17,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class AladinApiController {
 
     private final AladinApiService aladinApiService;
 
     @PostMapping("/api/books")
-    public String searchBooks(AladinFindRequest request, Model model) {
-        AladinBooksResponse result = aladinApiService.searchBooks(request);
-        model.addAttribute("result", result);
-        return "searchBooks";
+    public ResponseEntity<AladinBooksResponse> searchBooks(@RequestBody AladinFindRequest request) {
+        System.out.println("Keyword : " + request.getKeyword());
+        System.out.println("QueryType : " + request.getQueryType());
+        return ResponseEntity.ok()
+                .body(aladinApiService.searchBooks(request));
     }
-
-    @GetMapping("/home")
-    public String home() {
-        return "searchBooks";
-    }
-
 
 }

@@ -116,8 +116,10 @@ public class AladinApiService {
 
 
     public AladinBooksResponse searchBooks(AladinFindRequest request) {
+        String keyword = request.getKeyword();
+        keyword = keyword.contains(" ") ? keyword.replace(" ", "+") : keyword;
 
-        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey + "&Query=" + request.getKeyword().replace(" ", "+") + "&QueryType=" + request.getQueryType() + "&output=js");
+        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey + "&Query=" + keyword + "&QueryType=" + request.getQueryType() + "&output=js");
         String result = getHttpResponse(httpURLConnection);
 
         //ObjectMapper mapper = new ObjectMapper();
