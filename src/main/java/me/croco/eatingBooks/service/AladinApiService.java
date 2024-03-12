@@ -3,9 +3,11 @@ package me.croco.eatingBooks.service;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Book;
 import me.croco.eatingBooks.dto.AladinBooksResponse;
 import me.croco.eatingBooks.dto.AladinFindRequest;
+import me.croco.eatingBooks.util.HttpConnection;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -17,10 +19,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 @Service
+@RequiredArgsConstructor
 public class AladinApiService {
 
     // API 문서
     // https://docs.google.com/document/d/1mX-WxuoGs8Hy-QalhHcvuV17n50uGI2Sg_GHofgiePE/edit
+
+    private HttpConnection httpConnection;
 
     private final String ttbKey = "ttbhyde69ciel2017001";
 
@@ -44,75 +49,7 @@ public class AladinApiService {
     private final String findByIdUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
 
 
-    // HttpURLConnection 객체 생성
-    public HttpURLConnection getHttpURLConnection(String urlString) {
-        URL url;
-        HttpURLConnection conn = null;
-        try {
-            url = new URL(urlString);
-            System.out.println("알라딘 API 연결 : " + urlString);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET"); //Method 방식 설정. GET/POST/DELETE/PUT/HEAD/OPTIONS/TRACE
-            conn.setConnectTimeout(5000); //연결제한 시간 설정. 5초 간 연결시도
-            conn.setRequestProperty("Content-Type", "application/json");
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        return conn;
-
-    }
-
-    public String getHttpResponse(HttpURLConnection conn) {
-        StringBuilder sb = null;
-
-        try {
-            if(conn.getResponseCode() == 200) {
-                // 정상적으로 데이터를 받았을 경우
-                //데이터 가져오기
-                sb = readResponseData(conn.getInputStream());
-            }else{
-                // 정상적으로 데이터를 받지 못했을 경우
-
-                //오류코드, 오류 메시지 표출
-                System.out.println(conn.getResponseCode());
-                System.out.println(conn.getResponseMessage());
-                //오류정보 가져오기
-                sb = readResponseData(conn.getErrorStream());
-                System.out.println("error : " + sb.toString());
-                return null;
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }finally {
-            conn.disconnect(); //연결 해제
-        };
-        if(sb == null) return null;
-
-        return sb.toString();
-    }
-
-    public StringBuilder readResponseData(InputStream in) {
-        if(in == null ) return null;
-
-        StringBuilder sb = new StringBuilder();
-        String line = "";
-
-        try (InputStreamReader ir = new InputStreamReader(in);
-             BufferedReader br = new BufferedReader(ir)){
-            while( (line = br.readLine()) != null) {
-                sb.append(line);
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return sb;
-    }
 
 
     public AladinBooksResponse searchBooks(AladinFindRequest request) {
@@ -122,7 +59,7 @@ public class AladinApiService {
         int start = request.getStart();
         start = start == 0 ? 1 : start;
 
-        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey
+        HttpURLConnection httpURLConnection = httpConnection.getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey
                 + "&Query=" + keyword
                 + "&QueryType=" + request.getQueryType()
                 + "&Start=" +  start    // 페이지
@@ -134,9 +71,8 @@ public class AladinApiService {
                 + "&SearchTarget=Book"  // 검색 대상 : 도서
                 + "&output=js"   // 검색 결과 : JSON
         );
-        String result = getHttpResponse(httpURLConnection);
+        String result = httpConnection.getHttpResponse(httpURLConnection);
 
-        //ObjectMapper mapper = new ObjectMapper();
         ObjectMapper mapper = JsonMapper.builder()
                                     .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
                                     .build();
