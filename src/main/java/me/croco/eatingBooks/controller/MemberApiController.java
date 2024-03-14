@@ -1,11 +1,13 @@
 package me.croco.eatingBooks.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.MemberAddRequest;
 import me.croco.eatingBooks.service.MemberService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,11 +19,20 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Member> signUp(@RequestBody MemberAddRequest request) {
-        Member member = memberService.signup(request);
+    public String signUp(@RequestBody MemberAddRequest request) {
+        if(memberService.existsId(request)){
+            return "id error";
+        } else {
+            memberService.save(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(member);
+            return "redirect:login";
+        }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        return "redirect:login";
     }
 
 
