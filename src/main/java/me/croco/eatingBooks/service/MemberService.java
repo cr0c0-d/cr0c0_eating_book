@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.MemberAddRequest;
 import me.croco.eatingBooks.repository.MemberRepository;
+import me.croco.eatingBooks.util.Authorities;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +28,7 @@ public class MemberService implements UserDetailsService {
                         .id(request.getId())
                         .nickname(request.getNickname())
                         .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                        .authorities(Authorities.ROLE_USER)
                         .build()
                 )
                 .getId();

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.croco.eatingBooks.domain.Member;
+import me.croco.eatingBooks.util.Authorities;
 
 @Getter
 @NoArgsConstructor
@@ -21,6 +22,7 @@ public class MemberAddRequest {
                     .id(id)
                     .password(password)
                     .nickname(nickname)
+                    .authorities(Authorities.ROLE_USER)
                     .build();
     }
 }

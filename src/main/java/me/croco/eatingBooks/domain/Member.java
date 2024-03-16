@@ -1,13 +1,11 @@
 package me.croco.eatingBooks.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.croco.eatingBooks.util.Authorities;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,18 +34,22 @@ public class Member implements UserDetails {
 
     @CreatedDate
     @Column(name="created_at")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    private Authorities authorities;
 
     @Builder
-    public Member(String id, String nickname, String password) {
+    public Member(String id, String nickname, String password, Authorities authorities) {
         this.id = id;
         this.nickname = nickname;
         this.password = password;
+        this.authorities = Authorities.ROLE_USER;
     }
 
     @Override   // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("user"));
+        return List.of(new SimpleGrantedAuthority(authorities.toString()));
     }
 
     @Override
