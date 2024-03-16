@@ -1,3 +1,8 @@
+#logging:
+  #level:
+    #root: DEBUG
+    #jasypt: DEBUG
+
 spring:
   sql:
     init:
@@ -8,19 +13,19 @@ spring:
     show-sql: true
     properties:
       hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
         format_sql: true
-    # 테이블 생성 후에  import.sql 실행
-    defer-datasource-initialization : true
 
   datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
+    url: ENC(6Y9h/qRijEfMAVsFTk1wTd+Q7/mC9gehWhlLq6EkUSgJmP5xT0E3uu/qUOGYcbhlznlOqf0gIENlRWh/B1DxKK+YUTAK2Ip9gyG+no9ywW/eqNTbyphf9AKbE4OaN+AG04CD+gDt3NSDZetRVQBbJQ+lQaEmYXOqXPr3BWCmeDMDKmNh4tHeqfvq+Ec05wEkLXz3NGQfz3c=)
+    username: ENC(Y7isrGL6/Iv3vTOaqDzg75PUG0L123To)
+    password: ENC(M5qMqRli8rtm8adpY1EJF1d26qgXkuUSqpe5vCsl4yo=)
     sql-script-encoding: utf-8
 
-  h2:
-    console:
-      enabled: true
-
 jwt:
-  issuer: hyde69ciel@gmail.com
-  secret_key: eatingBooks_croco
+  issuer: cr0c0
+  secret_key: ENC(/BCY1rKWxF49AOfCLtGSlj0ygUf9kk+70Rc/NNnp0CNrDvTquUkAOZl1IFS5fYef)
+
+
+
