@@ -35,8 +35,8 @@ public class MemberService implements UserDetailsService {
 
     }
 
-    public Member findMemberById(String id) {
-        return memberRepository.findById(id).orElseThrow(() -> new RuntimeException("존재하지 않는 id 입니다."));
+    public Member findById(String id) {
+        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 id 입니다."));
     }
 
     @Override
