@@ -16,13 +16,14 @@ import org.springframework.stereotype.Service;
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     public boolean existsId(MemberAddRequest request) {
         return memberRepository.existsById(request.getId());
     }
 
     public String save(MemberAddRequest request) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         return memberRepository.save(
                 Member.builder()
                         .id(request.getId())

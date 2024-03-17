@@ -81,4 +81,11 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;    // true : 사용가능
     }
+
+    // 사용자 닉네임 변경
+    public Member update(String nickname) {
+        this.nickname = nickname;
+
+        return this;
+    }
 }

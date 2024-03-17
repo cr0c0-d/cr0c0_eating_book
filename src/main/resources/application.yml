@@ -1,7 +1,7 @@
 #logging:
-  #level:
-    #root: DEBUG
-    #jasypt: DEBUG
+#  level:
+#    root: DEBUG
+#    jasypt: DEBUG
 
 spring:
   sql:
@@ -22,6 +22,17 @@ spring:
     username: ENC(Y7isrGL6/Iv3vTOaqDzg75PUG0L123To)
     password: ENC(M5qMqRli8rtm8adpY1EJF1d26qgXkuUSqpe5vCsl4yo=)
     sql-script-encoding: utf-8
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(UQ3PMQLthZmySO2ibFEyOyRC3ilP3iccfweRbN1q3RN9AnNYm3VnGeYlLuQXpKuLbvCMJtq+dSbMmvZR4va/m6IVC4SKsjXyoyo9Adr/qthKKiw9FW+mhQ4bd4ZFca8+)
+            client-secret: ENC(3wrcwmN4d296K+Zyr6LcGTg5Zl+4XuvBrzB6OJYdRqC+SmykR4JkpwD2tCqNHUwTLRKuoDtsRRI=)
+            scope:
+              - email
+              - profile
 
 jwt:
   issuer: cr0c0
