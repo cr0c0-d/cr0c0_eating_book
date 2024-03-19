@@ -17,31 +17,34 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
-
-    public boolean existsId(MemberAddRequest request) {
-        return memberRepository.existsById(request.getId());
-    }
-
-    public String save(MemberAddRequest request) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return memberRepository.save(
-                Member.builder()
-                        .id(request.getId())
-                        .nickname(request.getNickname())
-                        .password(bCryptPasswordEncoder.encode(request.getPassword()))
-                        .authorities(Authorities.ROLE_USER)
-                        .build()
-                )
-                .getId();
-
-    }
-
-    public Member findById(String id) {
-        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 id 입니다."));
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberRepository.findById(username).orElseThrow(() -> new IllegalArgumentException("id : " + username));
+        return memberRepository.findByEmail(username).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 email : " + username));
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 id : " + id));
+    }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 email : " + email));
+    }
+
+    public Long saveMember(MemberAddRequest request) {
+
+        if(memberRepository.existsByEmail(request.getEmail())) {    // 이메일 중복확인
+            return null;
+        }
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return memberRepository.save(
+                        Member.builder()
+                                .email(request.getEmail())
+                                .nickname(request.getNickname())
+                                .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                                .authorities(Authorities.ROLE_USER)
+                                .build()
+                )
+                .getId();
     }
 }

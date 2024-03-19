@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.dto.MemberAddRequest;
 import me.croco.eatingBooks.service.MemberService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,21 +21,22 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public String signUp(@RequestBody MemberAddRequest request) {
-        if(memberService.existsId(request)){
-            return "id error";
-        } else {
-            memberService.save(request);
+    public ResponseEntity<String> signUp(@RequestBody MemberAddRequest request) {
+        Long memberId = memberService.saveMember(request);
 
-            return "redirect:login";
+        if(memberId == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("중복된 이메일");
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("회원가입 완료");
         }
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:login";
+        return ResponseEntity.ok()
+                .body("로그아웃 완료");
     }
-
-
 }

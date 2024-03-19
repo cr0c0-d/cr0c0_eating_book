@@ -22,9 +22,14 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member implements UserDetails {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private String id;
+    private Long id;
+
+    @Column(name = "email", nullable = false)
+    private String email;
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
@@ -40,11 +45,11 @@ public class Member implements UserDetails {
     private Authorities authorities;
 
     @Builder
-    public Member(String id, String nickname, String password, Authorities authorities) {
-        this.id = id;
+    public Member(String email, String nickname, String password, Authorities authorities) {
+        this.email = email;
         this.nickname = nickname;
         this.password = password;
-        this.authorities = Authorities.ROLE_USER;
+        this.authorities = authorities;
     }
 
     @Override   // 권한 반환
@@ -52,9 +57,21 @@ public class Member implements UserDetails {
         return List.of(new SimpleGrantedAuthority(authorities.toString()));
     }
 
+    // 사용자 닉네임 변경
+    public Member update(String nickname) {
+        this.nickname = nickname;
+
+        return this;
+    }
+
     @Override
     public String getUsername() {
-        return id;
+        return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     // 계정 만료여부 반환
@@ -82,10 +99,5 @@ public class Member implements UserDetails {
         return true;    // true : 사용가능
     }
 
-    // 사용자 닉네임 변경
-    public Member update(String nickname) {
-        this.nickname = nickname;
 
-        return this;
-    }
 }

@@ -11,7 +11,7 @@ import me.croco.eatingBooks.util.Authorities;
 @AllArgsConstructor
 public class MemberAddRequest {
 
-    private String id;
+    private String email;
 
     private String password;
 
@@ -19,7 +19,7 @@ public class MemberAddRequest {
 
     public Member toEntity() {
         return Member.builder()
-                    .id(id)
+                    .email(email)
                     .password(password)
                     .nickname(nickname)
                     .authorities(Authorities.ROLE_USER)
