@@ -36,7 +36,7 @@ public class TokenProvider {
                 .setIssuer(jwtProperties.getIssuer())              // 내용 - iss(토큰 발급자) : properties 설정값
                 .setIssuedAt(now)               // 내용 - iat(발급시간) : 현재 시간
                 .setExpiration(expiry)      // 내용 - exp(만료시간) : 현재시간
-                .setSubject(member.getId())     // 내용 - sub(토큰 제목) : 유저 id
+                .setSubject(member.getEmail())     // 내용 - sub(토큰 제목) : 유저 id
                 .claim("id", member.getId())    // 클레임 id : 유저 id
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())   // 서명 : 비밀값, 해시값 HS256로 암호화
                 .compact();

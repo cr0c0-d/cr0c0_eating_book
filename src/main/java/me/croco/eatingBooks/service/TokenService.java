@@ -26,7 +26,7 @@ public class TokenService {
             throw new IllegalArgumentException("토큰 오류");
         }
 
-        String userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
+        Long userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
         Member member = memberService.findById(userId);
         
         return tokenProvider.generateToken(member, Duration.ofHours(2));    // 2시간짜리 토큰 발급

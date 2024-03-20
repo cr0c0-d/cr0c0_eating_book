@@ -66,7 +66,7 @@ class TokenApiControllerTest {
 
         Member testMember = memberRepository.save(
                 Member.builder()
-                        .id("user@gmail.com")
+                        .email("user@gmail.com")
                         .password("1234")
                         .nickname("테스트유저")
                         .authorities(Authorities.ROLE_USER)
