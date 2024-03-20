@@ -3,6 +3,7 @@ package me.croco.eatingBooks.config.oauth;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.repository.MemberRepository;
+import me.croco.eatingBooks.util.Authorities;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -27,11 +28,12 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
         Map<String, Object> attributes = oAuth2User.getAttributes();
         String email = (String) attributes.get("email");
         String name = (String) attributes.get("name");
-        Member member = memberRepository.findById(email)
+        Member member = memberRepository.findByEmail(email)
                 .map(entity -> entity.update(name))
                 .orElse(Member.builder()
-                        .id(email)
+                        .email(email)
                         .nickname(name)
+                        .authorities(Authorities.ROLE_USER)
                         .build()
                 );
         return memberRepository.save(member);

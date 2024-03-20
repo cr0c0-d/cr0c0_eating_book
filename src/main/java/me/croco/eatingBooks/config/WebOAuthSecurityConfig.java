@@ -33,9 +33,8 @@ public class WebOAuthSecurityConfig {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
 
-
-    @Autowired
-    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     // 스프링 시큐리티 기능 비활성화
     @Bean
@@ -51,8 +50,17 @@ public class WebOAuthSecurityConfig {
         // 토큰 방식 인증이므로 기존 사용 폼로그인, 세션 비활성화
         http
                 .logout().disable()
-                .formLogin().disable()
+                //.formLogin().disable()
+                // formLogin도 활성화해봄
+                .formLogin(form ->
+                            form.loginPage("/login")
+                                    .loginProcessingUrl("/loginProcessing")
+                                    .successHandler(customAuthenticationSuccessHandler)
+                                    .failureHandler(customAuthenticationFailureHandler)
+                                    .usernameParameter("email")
+                            )
                 .csrf().disable()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .httpBasic().disable();
 
 
@@ -64,7 +72,7 @@ public class WebOAuthSecurityConfig {
 
         // 토큰 재발급 URL은 인증 없이 접근 가능하도록 설정. 나머지 API URL은 인증 필요
         http.authorizeHttpRequests((authorize) ->
-                authorize.requestMatchers("/api/token").permitAll()
+                authorize.requestMatchers("/api/token", "/signup", "/user").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 );

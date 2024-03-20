@@ -24,11 +24,11 @@ import java.time.Duration;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     // 별도의 authenticationSuccessHandler를 지정하지 않으면 SimpleUrlAuthenticationSuccessHandler가 실행되나,
     // 추가로 토큰 관련 작업을 위해 SimpleUrlAuthenticationSuccessHandler를 상속받아 onAuthenticationSuccess를 오버라이드
-    
+
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
-    public static final String REDIRECT_PATH = "/search";
+    public static final String REDIRECT_PATH = "http://localhost:3000/search";
 
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -38,7 +38,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        Member member = memberService.findById((String) oAuth2User.getAttributes().get("id"));
+        Member member = memberService.findByEmail((String)oAuth2User.getAttributes().get("email"));
 
         // 리프레시 토큰 생성 -> 저장 -> 쿠키에 저장
         String refreshToken = tokenProvider.generateToken(member, REFRESH_TOKEN_DURATION);
@@ -55,10 +55,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 리다이렉트
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
+        // 리다이렉트 대신 status 200을 응답하는걸로 바꿔봄
+        System.out.println("request.toString() : " +  request.toString());
+
     }
 
     // 생성된 리프레시 토큰을 전달받아 데이터베이스에 저장
-    private void saveRefreshToken(String userId, String newRefreshToken) {
+    private void saveRefreshToken(Long userId, String newRefreshToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
                 .map(entity -> entity.update(newRefreshToken))
                 .orElse(new RefreshToken(userId, newRefreshToken));

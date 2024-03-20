@@ -47,6 +47,9 @@ dependencies {
 
     // jasypt - 데이터 암호화 라이브러리
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+    
+    // OAuth2 사용
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 }
 

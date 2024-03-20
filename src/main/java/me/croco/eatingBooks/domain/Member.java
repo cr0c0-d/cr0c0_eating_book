@@ -34,7 +34,7 @@ public class Member implements UserDetails {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @CreatedDate
