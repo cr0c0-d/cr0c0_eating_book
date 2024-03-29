@@ -3,11 +3,9 @@ package me.croco.eatingBooks.config;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.config.jwt.TokenProvider;
 import me.croco.eatingBooks.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository;
-import me.croco.eatingBooks.config.oauth.OAuth2SuccessHandler;
 import me.croco.eatingBooks.config.oauth.OAuth2UserCustomService;
 import me.croco.eatingBooks.repository.RefreshTokenRepository;
 import me.croco.eatingBooks.service.MemberService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -33,7 +31,6 @@ public class WebOAuthSecurityConfig {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
 
-    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     // 스프링 시큐리티 기능 비활성화
@@ -55,7 +52,7 @@ public class WebOAuthSecurityConfig {
                 .formLogin(form ->
                             form.loginPage("/login")
                                     .loginProcessingUrl("/loginProcessing")
-                                    .successHandler(customAuthenticationSuccessHandler)
+                                    .successHandler(customAuthenticationSuccessHandler())
                                     .failureHandler(customAuthenticationFailureHandler)
                                     .usernameParameter("email")
                             )
@@ -72,7 +69,7 @@ public class WebOAuthSecurityConfig {
 
         // 토큰 재발급 URL은 인증 없이 접근 가능하도록 설정. 나머지 API URL은 인증 필요
         http.authorizeHttpRequests((authorize) ->
-                authorize.requestMatchers("/api/token", "/signup", "/user").permitAll()
+                authorize.requestMatchers("/api/token", "/signup").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 );
@@ -83,7 +80,7 @@ public class WebOAuthSecurityConfig {
                 //Authorization 요청과 관련된 상태 저장
                 .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
                 .and()
-                .successHandler(oAuth2SuccessHandler())
+                .successHandler(customAuthenticationSuccessHandler())
                 .userInfoEndpoint()
                 .userService(oAuth2UserCustomService);
 
@@ -99,10 +96,10 @@ public class WebOAuthSecurityConfig {
     }
 
 
-    @Bean
-    public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(tokenProvider, refreshTokenRepository, oAuth2AuthorizationRequestBasedOnCookieRepository(), memberService);
-    }
+//    @Bean
+//    public OAuth2SuccessHandler oAuth2SuccessHandler() {
+//        return new OAuth2SuccessHandler(tokenProvider, refreshTokenRepository, oAuth2AuthorizationRequestBasedOnCookieRepository(), memberService);
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder, MemberService memberService) throws Exception {
@@ -124,6 +121,11 @@ public class WebOAuthSecurityConfig {
     }
 
     @Bean
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler(tokenProvider, refreshTokenRepository, oAuth2AuthorizationRequestBasedOnCookieRepository(), memberService);
+    }
+
+    @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -135,7 +137,7 @@ public class WebOAuthSecurityConfig {
         configuration.addAllowedOrigin("http://25.10.86.27:3000");
         configuration.addAllowedOrigin("http://192.168.0.2:3000");
         configuration.addAllowedMethod("*"); // 모든 HTTP 메소드 허용
-        configuration.addAllowedHeader("*"); // 모든 헤더 허용
+        configuration.addAllowedHeader("Content-Type"); // 헤더 허용
         configuration.setAllowCredentials(true); // 쿠키 허용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 위 설정 적용
