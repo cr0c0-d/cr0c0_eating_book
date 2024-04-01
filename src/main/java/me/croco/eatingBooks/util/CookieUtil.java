@@ -11,7 +11,7 @@ import java.util.Base64;
 
 public class CookieUtil {
 
-    // 요청값(이름, 값, 만료기간)을 바탕으로 쿠키 추가
+    // 요청값(이름, 값, 만료기간)으로 쿠키 추가
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");    // 쿠키가 모든 경로에서 사용될 수 있다.
@@ -19,9 +19,9 @@ public class CookieUtil {
         response.addCookie(cookie);
     }
 
-    // 쿠키의 이름을 입력받아 쿠키 삭제
+    // 쿠키의 이름을 받아 해당 쿠키 삭제
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
-        Cookie[] cookies = request.getCookies();;
+        Cookie[] cookies = request.getCookies();
         if(cookies == null) {
             return;
         }
@@ -38,8 +38,10 @@ public class CookieUtil {
 
     // 객체를 직렬화해 쿠키의 값으로 변환
     public static String serialize(Object obj) {
-        return Base64.getUrlEncoder()
-                .encodeToString(SerializationUtils.serialize(obj));
+        return Base64.getUrlEncoder()   // Base64 인코더 가져옴 (URL에서 사용하기 적합)
+                .encodeToString(    //바이트 배열을 인코딩해서 문자열로 반환
+                        SerializationUtils.serialize(obj)   // 객체를 바이트 배열로 직렬화
+                );
     }
 
     // 쿠키를 역직렬화해 객체로 변환
@@ -55,13 +57,14 @@ public class CookieUtil {
         );
         */
 
-        byte[] data = Base64.getUrlDecoder().decode(cookie.getValue());
+        // 쿠키의 값을 Base64 디코더로 역직렬화하여 바이트 배열 얻음
+        byte[] data = Base64.getUrlDecoder().decode(cookie.getValue());     
 
         try{
-            ByteArrayInputStream bis = new ByteArrayInputStream(data);
-            ObjectInputStream ois = new ObjectInputStream(bis);
-            Object object = ois.readObject();
-            return cls.cast(object);
+            ByteArrayInputStream bis = new ByteArrayInputStream(data);  // 바이트 배열을 입력 스트림으로 변환
+            ObjectInputStream ois = new ObjectInputStream(bis); // 객체 입력 스트림 생성
+            Object object = ois.readObject();   // 스트림에서 객체를 읽어 반환
+            return cls.cast(object);    // 지정된 타입의 클래스 T로 변환해서 반환
 
         } catch (Exception e) {
             throw new RuntimeException("역직렬화 중 오류 발생", e);
