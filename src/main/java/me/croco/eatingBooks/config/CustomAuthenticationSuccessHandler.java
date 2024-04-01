@@ -1,5 +1,6 @@
 package me.croco.eatingBooks.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,21 +12,30 @@ import me.croco.eatingBooks.domain.RefreshToken;
 import me.croco.eatingBooks.repository.RefreshTokenRepository;
 import me.croco.eatingBooks.service.MemberService;
 import me.croco.eatingBooks.util.CookieUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
-//@Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    // 리프레시 토큰을 저장할 쿠키명
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
+
+    // 리프레시 토큰의 유효기간
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
-    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
+
+    // 액세스 토큰의 유효기간
+    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2);
+
     public static final String REDIRECT_PATH = "http://localhost:3000/search";
 
     private final TokenProvider tokenProvider;
@@ -53,13 +63,21 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         saveRefreshToken(member.getId(), refreshToken);
         addRefreshTokenToCookie(request, response, refreshToken);
 
-        // 액세스 토큰 생성 -> 패스에 액세스 토큰 추가
+        // 액세스 토큰 생성 -> 응답에 액세스 토큰 추가
         String accessToken = tokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
         //String targetUrl = getTargetUrl(accessToken);
         String targetUrl = REDIRECT_PATH;
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(accessToken);
+
+
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("accessToken", accessToken);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(tokenMap);
+
+
+        response.getWriter().write(jsonResponse);
         response.getWriter().flush();
 
         // 인증 관련 설정값, 쿠키 제거
@@ -85,8 +103,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     // 생성된 리프레시 토큰을 쿠키에 저장
     private void addRefreshTokenToCookie(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
         int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
-        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
-        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);	// 기존 리프레시 토큰 삭제
+        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);	// 새로운 리프레시 토큰 저장
     }
 
     // 인증 관련 설정값, 쿠키 제거
