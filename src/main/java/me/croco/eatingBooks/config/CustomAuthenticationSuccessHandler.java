@@ -47,8 +47,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        //response.setStatus(HttpServletResponse.SC_OK);
-
         Member member;
 
         if (authentication.getPrincipal() instanceof OAuth2User) {
@@ -65,16 +63,15 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // 액세스 토큰 생성 -> 응답에 액세스 토큰 추가
         String accessToken = tokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
-        //String targetUrl = getTargetUrl(accessToken);
-        String targetUrl = REDIRECT_PATH;
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
 
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("accessToken", accessToken);
+        Map<String, String> userMap = new HashMap<>();
+        userMap.put("accessToken", accessToken);
+        userMap.put("nickname", member.getNickname()); // 닉네임도 같이 보내기
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(tokenMap);
+        String jsonResponse = objectMapper.writeValueAsString(userMap);
 
 
         response.getWriter().write(jsonResponse);
@@ -82,13 +79,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // 인증 관련 설정값, 쿠키 제거
         clearAuthenticationAttributes(request, response);
-
-        // 리다이렉트
-        //getRedirectStrategy().sendRedirect(request, response, targetUrl);
-
-        // 리다이렉트 대신 status 200을 응답하는걸로 바꿔봄
-
-
     }
 
     // 생성된 리프레시 토큰을 전달받아 데이터베이스에 저장

@@ -46,7 +46,11 @@ public class WebOAuthSecurityConfig {
 
         // 토큰 방식 인증이므로 기존 사용 폼로그인, 세션 비활성화
         http
-                .logout().disable()
+                .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessHandler(customLogoutSuccessHandler())
+                    .clearAuthentication(true)
+                .and()
                 //.formLogin().disable()
                 // formLogin도 활성화해봄
                 .formLogin(form ->
@@ -130,6 +134,10 @@ public class WebOAuthSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public CustomLogoutSuccessHandler customLogoutSuccessHandler() {
+        return new CustomLogoutSuccessHandler();
+    }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

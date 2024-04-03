@@ -33,10 +33,11 @@ public class MemberApiController {
         }
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        return ResponseEntity.ok()
-                .body("로그아웃 완료");
-    }
+//    @GetMapping("/logout")
+//    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+//        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+//
+//        return ResponseEntity.ok()
+//                .body("로그아웃 완료");
+//    }
 }
