@@ -73,7 +73,7 @@ public class ArticleApiController {
     public ResponseEntity<List<ArticleTemplate>> findTemplateByType(@PathVariable String type) {
         List<ArticleTemplate> articleTemplates = articleService.findTemplateByType(type);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.ok()
                 .body(articleTemplates);
 
     }
