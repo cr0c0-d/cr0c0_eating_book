@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AladinBooksResponse {
+public class AladinBookResponse {
     private int version; // API Version
     private String title; // API 결과의 제목
     private String link; // API 결과와 관련된 알라딘 페이지 URL 주소
@@ -28,6 +28,5 @@ public class AladinBooksResponse {
 
 
 
-    private List<Book> item;
-
+    private Book item;
 }

@@ -4,19 +4,18 @@ import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.domain.Book;
-import me.croco.eatingBooks.dto.AladinBooksResponse;
+import me.croco.eatingBooks.dto.AladinBookResponse;
+import me.croco.eatingBooks.dto.AladinBooksListResponse;
 import me.croco.eatingBooks.dto.AladinFindRequest;
 import me.croco.eatingBooks.util.HttpConnection;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+
+import static me.croco.eatingBooks.util.HttpConnection.getHttpResponse;
+import static me.croco.eatingBooks.util.HttpConnection.getHttpURLConnection;
 
 @Service
 @RequiredArgsConstructor
@@ -52,14 +51,14 @@ public class AladinApiService {
 
 
 
-    public AladinBooksResponse searchBooks(AladinFindRequest request) {
+    public AladinBooksListResponse searchBooks(AladinFindRequest request) {
         String keyword = request.getKeyword();
         keyword = keyword.contains(" ") ? keyword.replace(" ", "+") : keyword;  // 검색어에 공백 존재시 '+'로 바꿔서 검색
 
         int start = request.getStart();
         start = start == 0 ? 1 : start;
 
-        HttpURLConnection httpURLConnection = httpConnection.getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey
+        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey
                 + "&Query=" + keyword
                 + "&QueryType=" + request.getQueryType()
                 + "&Start=" +  start    // 페이지
@@ -71,18 +70,52 @@ public class AladinApiService {
                 + "&SearchTarget=Book"  // 검색 대상 : 도서
                 + "&output=js"   // 검색 결과 : JSON
         );
-        String result = httpConnection.getHttpResponse(httpURLConnection);
+        String result = getHttpResponse(httpURLConnection);
 
         ObjectMapper mapper = JsonMapper.builder()
                                     .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
                                     .build();
-        AladinBooksResponse response = null;
+        AladinBooksListResponse response = null;
 
         try {
-            response = mapper.readValue(result, AladinBooksResponse.class);
+            response = mapper.readValue(result, AladinBooksListResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return response;
     }
+
+    public AladinBookResponse findBook(String isbn) {
+        String apiUrl = UriComponentsBuilder.fromUriString(findByIdUrl)
+                .queryParam("ttbkey", ttbKey)
+                .queryParam("ItemId", isbn)
+                .queryParam("ItemIdType", "ISBN13")
+                .queryParam("Cover", "Big")
+                .queryParam("Output", "js")
+                .queryParam("Version", "20131101")
+                .build()
+                .encode()
+                .toUriString();
+
+        HttpURLConnection httpURLConnection = getHttpURLConnection(apiUrl);
+
+        String result = getHttpResponse(httpURLConnection);
+
+        ObjectMapper mapper = JsonMapper.builder()
+                .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
+                .build();
+
+        AladinBookResponse response = null;
+
+        try {
+            response = mapper.readValue(result, AladinBookResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+
+
+
+    }
+
 }
