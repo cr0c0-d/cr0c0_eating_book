@@ -13,12 +13,14 @@ public class ArticleAddRequest {
     private String title;
     private String content;
     private String writer;
+    private String isbn;
 
     public Article toEntity() {
         return Article.builder()
                 .title(title)
                 .content(content)
                 .writer(writer)
+                .isbn(isbn)
                 .build();
     }
 }

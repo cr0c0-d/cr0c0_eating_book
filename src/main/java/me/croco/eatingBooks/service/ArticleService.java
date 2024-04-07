@@ -2,9 +2,11 @@ package me.croco.eatingBooks.service;
 
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Article;
+import me.croco.eatingBooks.domain.ArticleTemplate;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.repository.ArticleRepository;
+import me.croco.eatingBooks.repository.ArticleTemplatesRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final ArticleTemplatesRepository articleTemplatesRepository;
 
     // 글 작성
     public Article save(ArticleAddRequest request) {
@@ -46,6 +49,11 @@ public class ArticleService {
     // 글 삭제
     public void delete(Long id) {
         articleRepository.deleteById(id);
+    }
+
+    public List<ArticleTemplate> findTemplateByType(String type) {
+        return articleTemplatesRepository.findByTypeOrderByNumAsc(type);
+
     }
 
 }

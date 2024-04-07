@@ -2,6 +2,7 @@ package me.croco.eatingBooks.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Article;
+import me.croco.eatingBooks.domain.ArticleTemplate;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
 import me.croco.eatingBooks.dto.ArticleResponse;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
@@ -66,5 +67,14 @@ public class ArticleApiController {
         articleService.delete(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/api/articles/templates/{type}")
+    public ResponseEntity<List<ArticleTemplate>> findTemplateByType(@PathVariable String type) {
+        List<ArticleTemplate> articleTemplates = articleService.findTemplateByType(type);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(articleTemplates);
+
     }
 }
