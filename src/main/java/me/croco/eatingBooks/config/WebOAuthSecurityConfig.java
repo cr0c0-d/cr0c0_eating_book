@@ -46,6 +46,9 @@ public class WebOAuthSecurityConfig {
 
         // 토큰 방식 인증이므로 기존 사용 폼로그인, 세션 비활성화
         http
+                .authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/signup", "/user", "/login", "/api/books", "/api/books/{id}").permitAll()
+                )
                 .logout()
                     .logoutUrl("/logout")
                     .logoutSuccessHandler(customLogoutSuccessHandler())

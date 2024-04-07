@@ -1,7 +1,7 @@
 package me.croco.eatingBooks.api;
 
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.dto.AladinBooksResponse;
+import me.croco.eatingBooks.dto.AladinBooksListResponse;
 import me.croco.eatingBooks.dto.AladinFindRequest;
 import me.croco.eatingBooks.service.AladinApiService;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ public class AladinViewController {
 
     @PostMapping("/books")
     public String searchBooks(AladinFindRequest request, Model model) {
-        AladinBooksResponse result = aladinApiService.searchBooks(request);
+        AladinBooksListResponse result = aladinApiService.searchBooks(request);
         model.addAttribute("result", result);
         return "searchBooks";
     }
