@@ -36,6 +36,12 @@ public class Article {
     @Column(name = "isbn", nullable = false)
     private String isbn;
 
+    @Column(name = "type", nullable = false)
+    private String type;
+
+    @Column(name = "public_yn", nullable = false)
+    private String publicYn;
+
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
@@ -45,16 +51,20 @@ public class Article {
     private LocalDateTime createdAt;
 
     @Builder
-    public Article(String title, String content, String writer, String isbn) {
+    public Article(String title, String content, String writer, String isbn, String type, String publicYn) {
         this.title = title;
         this.content = content;
         this.writer = writer;
         this.isbn = isbn;
+        this.type = type;
+        this.publicYn = publicYn;
     }
 
-    public void update(String title, String content) {
+    public void update(String title, String content, String type, String publicYn) {
         this.title = title;
         this.content = content;
+        this.type = type;
+        this.publicYn = publicYn;
     }
 }
 

@@ -3,13 +3,17 @@ package me.croco.eatingBooks.service;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.ArticleTemplate;
+import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.repository.ArticleRepository;
 import me.croco.eatingBooks.repository.ArticleTemplatesRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class ArticleService {
 
     // 글 작성
     public Article save(ArticleAddRequest request) {
+        request.setWriter(SecurityContextHolder.getContext().getAuthentication().getName());
         return articleRepository.save(request.toEntity());
     }
 
@@ -41,7 +46,7 @@ public class ArticleService {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글 찾을 수 없음 : " + id));
 
-        article.update(request.getTitle(), request.getContent());
+        article.update(request.getTitle(), request.getContent(), request.getType(), request.getPublicYn());
 
         return article;
     }
