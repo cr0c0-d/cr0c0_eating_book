@@ -11,7 +11,7 @@ public class ArticleUpdateRequest {
 
     private String title;
     private String content;
-    private String type;
+    private String writeType;
     private String publicYn;
 
 }

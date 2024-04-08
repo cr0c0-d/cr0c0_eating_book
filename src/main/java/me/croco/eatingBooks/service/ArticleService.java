@@ -46,7 +46,7 @@ public class ArticleService {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글 찾을 수 없음 : " + id));
 
-        article.update(request.getTitle(), request.getContent(), request.getType(), request.getPublicYn());
+        article.update(request.getTitle(), request.getContent(), request.getWriteType(), request.getPublicYn());
 
         return article;
     }

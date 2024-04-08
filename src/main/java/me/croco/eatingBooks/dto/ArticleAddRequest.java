@@ -1,5 +1,6 @@
 package me.croco.eatingBooks.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,10 @@ public class ArticleAddRequest {
     private String content;
     private String writer;
     private String isbn;
-    private String type;
+    private String writeType;
+    private String articleType;
     private String publicYn;
+
 
     public Article toEntity() {
         return Article.builder()
@@ -25,7 +28,8 @@ public class ArticleAddRequest {
                 .content(content)
                 .isbn(isbn)
                 .writer(writer)
-                .type(type)
+                .writeType(writeType)
+                .articleType(articleType)
                 .publicYn(publicYn)
                 .build();
     }
