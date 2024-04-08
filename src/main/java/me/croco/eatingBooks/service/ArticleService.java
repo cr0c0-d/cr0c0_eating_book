@@ -37,8 +37,9 @@ public class ArticleService {
     public Article findById(long id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글 찾을 수 없음 : " + id));
+
         if (article.getPublicYn().equals("false")) { // 비공개 글인 경우
-            if(article.getWriter().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            if(!article.getWriter().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
                 throw new AuthenticationServiceException("조회 권한 없음");
             }
         }
