@@ -10,9 +10,11 @@ import me.croco.eatingBooks.service.ArticleService;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -32,25 +34,32 @@ public class ArticleApiController {
     // 글 조회
     @GetMapping("/api/articles/{id}")
     public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id) {
-        Article article = articleService.findById(id);
+        try {
+            Article article = articleService.findById(id);
+            Map<Long, String> articleTemplateMap = articleService.findTemplateMapByType(article.getArticleType());
+            return ResponseEntity.ok()
+                    .body(new ArticleResponse(article, articleTemplateMap));
 
-        return ResponseEntity.ok()
-                .body(new ArticleResponse(article));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (AuthenticationServiceException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     // 글 목록 조회
-    @GetMapping("/api/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticles() {
-        List<Article> articleList = articleService.findAll();
-
-        List<ArticleResponse> articleResponseList = articleList
-                .stream()
-                .map(ArticleResponse::new)
-                .toList();
-
-        return ResponseEntity.ok()
-                .body(articleResponseList);
-    }
+//    @GetMapping("/api/articles")
+//    public ResponseEntity<List<ArticleResponse>> findAllArticles() {
+//        List<Article> articleList = articleService.findAll();
+//
+//        List<ArticleResponse> articleResponseList = articleList
+//                .stream()
+//                .map(ArticleResponse::new)
+//                .toList();
+//
+//        return ResponseEntity.ok()
+//                .body(articleResponseList);
+//    }
 
     // 글 수정
     @PutMapping("/api/articles/{id}")

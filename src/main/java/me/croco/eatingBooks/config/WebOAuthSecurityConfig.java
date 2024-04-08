@@ -8,6 +8,7 @@ import me.croco.eatingBooks.repository.RefreshTokenRepository;
 import me.croco.eatingBooks.service.MemberService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -48,6 +49,8 @@ public class WebOAuthSecurityConfig {
         http
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/signup", "/user", "/login", "/api/books", "/api/books/{id}").permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.GET.name())).permitAll() // 글 조회 -> 허용
+                                .requestMatchers(new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.POST.name())).authenticated() // 글 수정 -> 권한 필요
                 )
                 .logout()
                     .logoutUrl("/logout")
@@ -149,6 +152,7 @@ public class WebOAuthSecurityConfig {
         configuration.addAllowedOrigin("http://192.168.0.2:3000");
         configuration.addAllowedMethod("*"); // 모든 HTTP 메소드 허용
         configuration.addAllowedHeader("Content-Type"); // 헤더 허용
+        configuration.addAllowedHeader("Authorization"); // 헤더 허용
         configuration.setAllowCredentials(true); // 쿠키 허용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 위 설정 적용
