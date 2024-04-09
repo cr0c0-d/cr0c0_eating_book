@@ -36,6 +36,9 @@ public class Article {
     @Column(name = "isbn", nullable = false)
     private String isbn;
 
+    @Column(name = "book_title", nullable = false)
+    private String bookTitle;
+
     @Column(name = "write_type", nullable = false)
     private String writeType;
 
@@ -54,11 +57,12 @@ public class Article {
     private LocalDateTime createdAt;
 
     @Builder
-    public Article(String title, String content, String writer, String isbn, String writeType, String articleType, String publicYn) {
+    public Article(String title, String content, String writer, String isbn, String bookTitle, String writeType, String articleType, String publicYn) {
         this.title = title;
         this.content = content;
         this.writer = writer;
         this.isbn = isbn;
+        this.bookTitle = bookTitle;
         this.writeType = writeType;
         this.articleType = articleType;
         this.publicYn = publicYn;

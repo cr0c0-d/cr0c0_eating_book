@@ -17,6 +17,7 @@ public class ArticleAddRequest {
     private String content;
     private String writer;
     private String isbn;
+    private String bookTitle;
     private String writeType;
     private String articleType;
     private String publicYn;
@@ -28,6 +29,7 @@ public class ArticleAddRequest {
                 .content(content)
                 .isbn(isbn)
                 .writer(writer)
+                .bookTitle(bookTitle)
                 .writeType(writeType)
                 .articleType(articleType)
                 .publicYn(publicYn)
