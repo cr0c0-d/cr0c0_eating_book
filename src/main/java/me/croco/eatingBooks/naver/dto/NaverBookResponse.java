@@ -7,11 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.croco.eatingBooks.naver.domain.NaverBook;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NaverBookResponse {
-    private NaverBook item;
+    private String lastBuildDate;
+    private int total;
+    private int start;
+    private int display;
+    private List<NaverBook> items;
 }

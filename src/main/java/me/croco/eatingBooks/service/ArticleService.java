@@ -1,21 +1,22 @@
 package me.croco.eatingBooks.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import me.croco.eatingBooks.config.jwt.TokenProvider;
 import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.ArticleTemplate;
-import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.repository.ArticleRepository;
 import me.croco.eatingBooks.repository.ArticleTemplatesRepository;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
+import me.croco.eatingBooks.util.HttpHeaderChecker;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final ArticleTemplatesRepository articleTemplatesRepository;
+    private final HttpHeaderChecker httpHeaderChecker;
 
     // 글 작성
     public Article save(ArticleAddRequest request) {
@@ -34,13 +36,23 @@ public class ArticleService {
     }
 
     // 글 조회
-    public Article findById(long id) {
+    public Article findById(long id, HttpServletRequest request) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글 찾을 수 없음 : " + id));
 
         if (article.getPublicYn().equals("false")) { // 비공개 글인 경우
-            if(!article.getWriter().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-                throw new AuthenticationServiceException("조회 권한 없음");
+            // 로그인 상태인지 확인
+            boolean validToken = httpHeaderChecker.checkAuthorizationHeader(request);
+
+            if (!validToken) {   // 비로그인 상태
+                throw new AuthenticationCredentialsNotFoundException("로그인 필요");
+            }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            // 로그인 상태인 경우
+            if(!article.getWriter().equals(authentication.getName())) { //로그인 사용자와 작성자 비교
+                throw new AccessDeniedException("조회 권한 없음");
             }
         }
         return article;

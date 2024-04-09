@@ -20,9 +20,9 @@ public class NaverBooksApiController {
                 .body(naverBooksApiService.searchBooks(request));
     }
 
-//    @GetMapping("/api/books/{isbn}")
-//    public ResponseEntity<NaverBookResponse> findBook(@PathVariable String isbn) {
-//        return ResponseEntity.ok()
-//                .body(naverBooksApiService.findBook(isbn));
-//    }
+    @GetMapping("/api/books/{isbn}")
+    public ResponseEntity<NaverBookResponse> findBook(@PathVariable String isbn) {
+        return ResponseEntity.ok()
+                .body(naverBooksApiService.findBook(isbn));
+    }
 }

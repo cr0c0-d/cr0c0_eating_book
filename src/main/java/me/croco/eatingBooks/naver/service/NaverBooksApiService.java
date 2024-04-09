@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.dto.AladinBookResponse;
-import me.croco.eatingBooks.dto.AladinBooksListResponse;
-import me.croco.eatingBooks.dto.AladinFindRequest;
 import me.croco.eatingBooks.naver.config.NaverProperties;
 import me.croco.eatingBooks.naver.dto.NaverBookFindRequest;
 import me.croco.eatingBooks.naver.dto.NaverBookResponse;
@@ -35,7 +32,7 @@ public class NaverBooksApiService {
     private final String findUrl = "https://openapi.naver.com/v1/search/book.json";
 
     // 상품 조회 URL
-    private final String findByIdUrl = "https://openapi.naver.com/v1/search/book_adv.xml";
+    private final String findByIdUrl = "https://openapi.naver.com/v1/search/book_adv.json";
 
 
 
@@ -91,7 +88,6 @@ public class NaverBooksApiService {
         ObjectMapper mapper = JsonMapper.builder()
                 .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
                 .build();
-
         NaverBookResponse response = null;
 
         try {
