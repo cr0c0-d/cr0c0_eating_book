@@ -1,5 +1,6 @@
 package me.croco.eatingBooks.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.ArticleTemplate;
@@ -8,8 +9,11 @@ import me.croco.eatingBooks.dto.ArticleResponse;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.service.ArticleService;
 import org.apache.coyote.Response;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,17 +37,21 @@ public class ArticleApiController {
     }
     // 글 조회
     @GetMapping("/api/articles/{id}")
-    public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id) {
+    public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id, HttpServletRequest request) {
         try {
-            Article article = articleService.findById(id);
+            Article article = articleService.findById(id, request);
             Map<Long, String> articleTemplateMap = articleService.findTemplateMapByType(article.getArticleType());
             return ResponseEntity.ok()
                     .body(new ArticleResponse(article, articleTemplateMap));
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (AuthenticationServiceException e) {
+
+        } catch (AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        } catch (AuthenticationCredentialsNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

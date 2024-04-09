@@ -6,6 +6,7 @@ import me.croco.eatingBooks.config.oauth.OAuth2AuthorizationRequestBasedOnCookie
 import me.croco.eatingBooks.config.oauth.OAuth2UserCustomService;
 import me.croco.eatingBooks.repository.RefreshTokenRepository;
 import me.croco.eatingBooks.service.MemberService;
+import me.croco.eatingBooks.util.HttpHeaderChecker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebOAuthSecurityConfig {
     private final OAuth2UserCustomService oAuth2UserCustomService;
     private final TokenProvider tokenProvider;
+    private final HttpHeaderChecker httpHeaderChecker;
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
 
@@ -122,7 +124,7 @@ public class WebOAuthSecurityConfig {
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(tokenProvider);
+        return new TokenAuthenticationFilter(httpHeaderChecker);
     }
 
     @Bean
