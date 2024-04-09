@@ -4,10 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.ArticleTemplate;
+import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
 import me.croco.eatingBooks.dto.ArticleResponse;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.service.ArticleService;
+import me.croco.eatingBooks.service.MemberService;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class ArticleApiController {
 
     private final ArticleService articleService;
+    private final MemberService memberService;
 
     // 글 작성
     @PostMapping("/api/articles")
@@ -39,18 +42,20 @@ public class ArticleApiController {
     @GetMapping("/api/articles/{id}")
     public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id, HttpServletRequest request) {
         try {
-            Article article = articleService.findById(id, request);
-            Map<Long, String> articleTemplateMap = articleService.findTemplateMapByType(article.getArticleType());
-            return ResponseEntity.ok()
-                    .body(new ArticleResponse(article, articleTemplateMap));
+            Article article = articleService.findById(id, request); // 글 정보
+            Map<Long, String> articleTemplateMap = articleService.findTemplateMapByType(article.getArticleType());  // 글에 포함된 템플릿 정보
+            Member writer = memberService.findByEmail(article.getWriter());
 
-        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok()
+                    .body(new ArticleResponse(article, articleTemplateMap, writer));
+
+        } catch (IllegalArgumentException e) {  // 글 id 오류
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
-        } catch (AccessDeniedException e) {
+        } catch (AccessDeniedException e) { // 권한 없음(비공개 글)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
-        } catch (AuthenticationCredentialsNotFoundException e) {
+        } catch (AuthenticationCredentialsNotFoundException e) {    // 로그인 필요
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
