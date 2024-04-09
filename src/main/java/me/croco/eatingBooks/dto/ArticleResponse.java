@@ -5,6 +5,7 @@ import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.Member;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Getter
@@ -16,8 +17,8 @@ public class ArticleResponse {
     private String writeType;
     private String articleType;
     private String publicYn;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String createdAt;
+    private String updatedAt;
 
     private Map<Long, String> articleTemplateMap;
 
@@ -33,8 +34,10 @@ public class ArticleResponse {
         this.writeType = article.getWriteType();
         this.articleType = article.getArticleType();
         this.publicYn = article.getPublicYn();
-        this.createdAt = article.getCreatedAt();
-        this.updatedAt = article.getUpdatedAt();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+        this.createdAt = article.getCreatedAt().format(formatter);
+        this.updatedAt = article.getUpdatedAt().format(formatter);
         this.articleTemplateMap = articleTemplateMap;
     }
 }
