@@ -2,7 +2,6 @@ package me.croco.eatingBooks.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.config.jwt.TokenProvider;
 import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.ArticleTemplate;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
@@ -58,9 +57,9 @@ public class ArticleService {
         return article;
     }
 
-    // 글 목록 조회
-    public List<Article> findAll() {
-        return articleRepository.findAll();
+    // 공개 글 목록 조회
+    public List<Article> findPublicArticles() {
+        return articleRepository.findPublicArticles();
     }
 
     // 글 수정

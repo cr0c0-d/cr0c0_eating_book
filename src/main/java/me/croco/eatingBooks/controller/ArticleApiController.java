@@ -6,6 +6,7 @@ import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.ArticleTemplate;
 import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
+import me.croco.eatingBooks.dto.ArticleListResponse;
 import me.croco.eatingBooks.dto.ArticleResponse;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.service.ArticleService;
@@ -61,18 +62,18 @@ public class ArticleApiController {
     }
 
     // 글 목록 조회
-//    @GetMapping("/api/articles")
-//    public ResponseEntity<List<ArticleResponse>> findAllArticles() {
-//        List<Article> articleList = articleService.findAll();
-//
-//        List<ArticleResponse> articleResponseList = articleList
-//                .stream()
-//                .map(ArticleResponse::new)
-//                .toList();
-//
-//        return ResponseEntity.ok()
-//                .body(articleResponseList);
-//    }
+    @GetMapping("/api/articles")
+    public ResponseEntity<List<ArticleListResponse>> findAllArticles() {
+        List<Article> articleList = articleService.findPublicArticles();
+
+        List<ArticleListResponse> articleResponseList = articleList
+                .stream()
+                .map((article) -> new ArticleListResponse(article, memberService.findByEmail(article.getWriter()).getNickname()))
+                .toList();
+
+        return ResponseEntity.ok()
+                .body(articleResponseList);
+    }
 
     // 글 수정
     @PutMapping("/api/articles/{id}")
