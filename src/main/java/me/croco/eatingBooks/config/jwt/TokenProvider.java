@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Member;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,8 @@ public class TokenProvider {
                 .setExpiration(expiry)                              // 내용 - exp(만료시간) : expiry 변수값
                 .setSubject(member.getEmail())                      // 내용 - sub(토큰 제목) : 유저 이메일
                 .claim("id", member.getId())                    // 클레임 id : 유저 id
-                .claim("role", member.getAuthorities())        // 클레임 roles : 유저의 권한
+                .claim("role", member.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().get(0))        // 클레임 roles : 유저의 권한
+                //.claim("role", "ROLE_USER")        // 클레임 roles : 유저의 권한
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())   // 서명 : 비밀값, 해시값 HS256로 암호화
                 .compact();
     }
@@ -58,7 +60,7 @@ public class TokenProvider {
     // 토큰 기반 인증 정보 가져오기
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
-        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority((String) getClaims(token).get("role")));
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority((String) getClaims(token).get("role", String.class)));
 
         return new UsernamePasswordAuthenticationToken(new User(claims.getSubject(), "", authorities), token, authorities);
     }

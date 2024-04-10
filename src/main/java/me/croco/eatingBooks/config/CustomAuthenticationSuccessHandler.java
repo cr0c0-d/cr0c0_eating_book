@@ -12,17 +12,19 @@ import me.croco.eatingBooks.domain.RefreshToken;
 import me.croco.eatingBooks.repository.RefreshTokenRepository;
 import me.croco.eatingBooks.service.MemberService;
 import me.croco.eatingBooks.util.CookieUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -67,9 +69,13 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         response.setCharacterEncoding("UTF-8");
 
 
-        Map<String, String> userMap = new HashMap<>();
+        Map<String, Object> userMap = new HashMap<>();
+
         userMap.put("accessToken", accessToken);
-        userMap.put("nickname", member.getNickname()); // 닉네임도 같이 보내기
+        userMap.put("nickname", member.getNickname()); // 닉네임
+        userMap.put("id", "" + member.getId()); // Long 타입 아이디
+        userMap.put("role", member.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().get(0)); // 권한
+
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(userMap);
 
