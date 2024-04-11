@@ -12,6 +12,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000", "http://25.10.86.27:3000", "http://192.168.0.2:3000", "http://127.0.0.1:3000")
                 .allowCredentials(true)
+                .allowedHeaders("Authorization")
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE");
 
         //		addMapping - CORS를 적용할 url의 패턴을 정의 (/** 로 모든 패턴을 가능하게 함)
