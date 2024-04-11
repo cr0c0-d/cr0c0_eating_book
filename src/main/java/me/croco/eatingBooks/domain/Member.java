@@ -54,7 +54,7 @@ public class Member implements UserDetails {
 
     @Override   // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(authorities.toString()));
+        return List.of(new SimpleGrantedAuthority(authorities.getAuthorityName()));
     }
 
     // 사용자 닉네임 변경

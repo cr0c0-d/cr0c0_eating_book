@@ -47,20 +47,30 @@ public class WebOAuthSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)  throws Exception {
 
-        // 토큰 방식 인증이므로 기존 사용 폼로그인, 세션 비활성화
         http
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/signup", "/user", "/login", "/api/books", "/api/books/{id}").permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.GET.name())).permitAll() // 글 조회 -> 허용
-                                .requestMatchers(new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.POST.name())).authenticated() // 글 수정 -> 권한 필요
+                        authorize
+                                .requestMatchers(
+                                        "/login", // 로그인
+                                        "/api/token", // 토큰 발급
+                                        "/api/books", // 책 검색
+                                        "/api/books/{id}",  // 책 상세 정보 조회
+                                        "/api/articles" // 글 목록 조회
+                                ).permitAll()
+
+                                .requestMatchers(
+                                        new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.GET.name()), // 글 조회만 허용
+                                        new AntPathRequestMatcher("/api/members/", HttpMethod.POST.name())  // 회원가입만 허용
+                                ).permitAll()
+
                 )
+
                 .logout()
                     .logoutUrl("/logout")
                     .logoutSuccessHandler(customLogoutSuccessHandler())
                     .clearAuthentication(true)
                 .and()
-                //.formLogin().disable()
-                // formLogin도 활성화해봄
+
                 .formLogin(form ->
                             form.loginPage("/login")
                                     .loginProcessingUrl("/loginProcessing")
@@ -79,12 +89,12 @@ public class WebOAuthSecurityConfig {
         // 헤더를 확인할 커스텀 필터 추가
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        // 토큰 재발급 URL은 인증 없이 접근 가능하도록 설정. 나머지 API URL은 인증 필요
-        http.authorizeHttpRequests((authorize) ->
-                authorize.requestMatchers("/api/token", "/signup").permitAll()
-                        .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll()
-                );
+//        // 토큰 재발급 URL은 인증 없이 접근 가능하도록 설정. 나머지 API URL은 인증 필요
+//        http.authorizeHttpRequests((authorize) ->
+//                authorize.requestMatchers("/api/token", "/signup").permitAll()
+//                        .requestMatchers("/api/**").authenticated()
+//                        .anyRequest().permitAll()
+//                );
 
         http.oauth2Login()
                 .loginPage("/login")
