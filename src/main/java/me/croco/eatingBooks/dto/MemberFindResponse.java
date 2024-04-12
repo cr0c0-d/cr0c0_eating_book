@@ -1,9 +1,11 @@
 package me.croco.eatingBooks.dto;
 
+import lombok.Getter;
 import me.croco.eatingBooks.domain.Member;
 
 import java.time.format.DateTimeFormatter;
 
+@Getter
 public class MemberFindResponse {
     private Long id;
     private String email;
