@@ -51,7 +51,7 @@ public class WebOAuthSecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(
-                                        "/login", // 로그인
+                                        "/signup", "/login", // 로그인
                                         "/api/token", // 토큰 발급
                                         "/api/books", // 책 검색
                                         "/api/books/{id}",  // 책 상세 정보 조회
@@ -62,6 +62,9 @@ public class WebOAuthSecurityConfig {
                                         new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.GET.name()), // 글 조회만 허용
                                         new AntPathRequestMatcher("/api/members/", HttpMethod.POST.name())  // 회원가입만 허용
                                 ).permitAll()
+
+                                .requestMatchers("/api/**").authenticated()
+                                .anyRequest().permitAll()
 
                 )
 
@@ -89,7 +92,7 @@ public class WebOAuthSecurityConfig {
         // 헤더를 확인할 커스텀 필터 추가
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-//        // 토큰 재발급 URL은 인증 없이 접근 가능하도록 설정. 나머지 API URL은 인증 필요
+        // 토큰 재발급 URL은 인증 없이 접근 가능하도록 설정. 나머지 API URL은 인증 필요
 //        http.authorizeHttpRequests((authorize) ->
 //                authorize.requestMatchers("/api/token", "/signup").permitAll()
 //                        .requestMatchers("/api/**").authenticated()

@@ -22,16 +22,15 @@ public class MemberApiController {
 
     private final MemberService memberService;
 
-    @PostMapping("/api/members")
+    @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody MemberAddRequest request) {
-        Long memberId = memberService.saveMember(request);
-
-        if(memberId == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("중복된 이메일");
-        } else {
+        try {
+            Long memberId = memberService.saveMember(request);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("회원가입 완료");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("중복된 이메일");
         }
     }
 

@@ -60,7 +60,7 @@ public class MemberService implements UserDetailsService {
     public Long saveMember(MemberAddRequest request) {
 
         if(memberRepository.existsByEmail(request.getEmail())) {    // 이메일 중복확인
-            return null;
+            throw new IllegalArgumentException("중복된 이메일");
         }
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
