@@ -26,7 +26,6 @@ public class NaverBooksApiService {
     // https://docs.google.com/document/d/1mX-WxuoGs8Hy-QalhHcvuV17n50uGI2Sg_GHofgiePE/edit
 
     private final NaverProperties naverProperties;
-    private HttpConnection httpConnection;
 
     // 상품 검색 URL
     private final String findUrl = "https://openapi.naver.com/v1/search/book.json";

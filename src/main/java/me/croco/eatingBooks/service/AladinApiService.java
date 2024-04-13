@@ -8,6 +8,7 @@ import me.croco.eatingBooks.dto.AladinBookResponse;
 import me.croco.eatingBooks.dto.AladinBooksListResponse;
 import me.croco.eatingBooks.dto.AladinFindRequest;
 import me.croco.eatingBooks.util.HttpConnection;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -24,9 +25,8 @@ public class AladinApiService {
     // API 문서
     // https://docs.google.com/document/d/1mX-WxuoGs8Hy-QalhHcvuV17n50uGI2Sg_GHofgiePE/edit
 
-    private HttpConnection httpConnection;
-
-    private final String ttbKey = "ttbhyde69ciel2017001";
+    @Value("${apiKey.aladin}")
+    private String ttbKey;
 
     // 상품 검색 URL
     // 필수값 : ttbkey, Query(검색어)

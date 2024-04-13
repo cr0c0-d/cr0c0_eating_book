@@ -2,7 +2,6 @@
 #  level:
 #    root: DEBUG
 #    jasypt: DEBUG
-
 spring:
   sql:
     init:
@@ -68,6 +67,15 @@ spring:
 jwt:
   issuer: cr0c0
   secret_key: ENC(/BCY1rKWxF49AOfCLtGSlj0ygUf9kk+70Rc/NNnp0CNrDvTquUkAOZl1IFS5fYef)
+
+file:
+  upload:
+    path: resources/static/image/
+
+apiKey:
+  aladin: ENC(qlX7ujIj5Q43k1Z6WOB9Rfnm5swpp4BVOAJKsaEkt+iQzzg+X0k85g==)
+  imgBB: ENC(3COeQD3IOuvV9sLL+5enqxsw4xa6qSb1w40h9o292kD8V3wEayy2c70idONz7LejasdFT3AKJuY=)
+
 
 
 

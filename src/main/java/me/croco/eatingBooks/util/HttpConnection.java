@@ -16,13 +16,16 @@ public class HttpConnection {
 
     // HttpURLConnection 객체 생성
     public static HttpURLConnection getHttpURLConnection(String urlString) {
+        return getHttpURLConnection(urlString, "GET");
+    }
+    public static HttpURLConnection getHttpURLConnection(String urlString, String method) {
         URL url;
         HttpURLConnection conn = null;
         try {
             url = new URL(urlString);
             System.out.println("API 연결 : " + urlString);
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET"); //Method 방식 설정. GET/POST/DELETE/PUT/HEAD/OPTIONS/TRACE
+            conn.setRequestMethod(method); //Method 방식 설정. GET/POST/DELETE/PUT/HEAD/OPTIONS/TRACE
             conn.setConnectTimeout(5000); //연결제한 시간 설정. 5초 간 연결시도
             conn.setRequestProperty("Content-Type", "application/json");
 
@@ -31,9 +34,7 @@ public class HttpConnection {
         } catch(IOException e) {
             e.printStackTrace();
         }
-
         return conn;
-
     }
 
     public static String getHttpResponse(HttpURLConnection conn) {
