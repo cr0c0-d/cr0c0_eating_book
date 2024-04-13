@@ -3,6 +3,7 @@ package me.croco.eatingBooks.service;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.MemberAddRequest;
+import me.croco.eatingBooks.dto.MemberUpdateRequest;
 import me.croco.eatingBooks.repository.MemberRepository;
 import me.croco.eatingBooks.util.Authorities;
 import org.springframework.security.access.AccessDeniedException;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -73,5 +75,28 @@ public class MemberService implements UserDetailsService {
                                 .build()
                 )
                 .getId();
+    }
+
+    @Transactional
+    public Long updateMember(MemberUpdateRequest request) {
+        Member member = memberRepository.findById(request.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 id : " + request.getId()));
+
+        // 비밀번호를 변경했다면
+        if(!request.getPassword().equals("")) {
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            member.updatePassword(bCryptPasswordEncoder.encode(request.getPassword()));
+        }
+
+        // 닉네임을 변경했다면
+        if(!member.getNickname().equals(request.getNickname())) {
+            member.update(request.getNickname());
+        }
+
+        // 프로필 이미지를 변경했다면
+        if(!member.getProfileImg().equals(request.getProfileImg())) {
+            member.updateProfileImg(request.getProfileImg());
+        }
+
+        return member.getId();
     }
 }

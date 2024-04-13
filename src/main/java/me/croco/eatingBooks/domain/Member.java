@@ -37,6 +37,9 @@ public class Member implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "profile_img")
+    private String profileImg;
+
     @CreatedDate
     @Column(name="created_at")
     private LocalDateTime createdAt;
@@ -45,10 +48,11 @@ public class Member implements UserDetails {
     private Authorities authorities;
 
     @Builder
-    public Member(String email, String nickname, String password, Authorities authorities) {
+    public Member(String email, String nickname, String password, String profileImg, Authorities authorities) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.profileImg = profileImg;
         this.authorities = authorities;
     }
 
@@ -60,7 +64,15 @@ public class Member implements UserDetails {
     // 사용자 닉네임 변경
     public Member update(String nickname) {
         this.nickname = nickname;
+        return this;
+    }
+    public Member updateProfileImg(String profileImg) {
+        this.profileImg = profileImg;
+        return this;
+    }
 
+    public Member updatePassword(String password) {
+        this.password = password;
         return this;
     }
 

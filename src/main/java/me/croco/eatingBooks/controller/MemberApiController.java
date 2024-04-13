@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.MemberAddRequest;
 import me.croco.eatingBooks.dto.MemberFindResponse;
+import me.croco.eatingBooks.dto.MemberUpdateRequest;
 import me.croco.eatingBooks.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,13 @@ public class MemberApiController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .build();
         }
+    }
+
+    @PutMapping("/api/members")
+    public ResponseEntity<String> updateMember(@RequestBody MemberUpdateRequest request) {
+        Long memberId = memberService.updateMember(request);
+        return ResponseEntity.ok()
+                .build();
     }
 
 //    @GetMapping("/logout")
