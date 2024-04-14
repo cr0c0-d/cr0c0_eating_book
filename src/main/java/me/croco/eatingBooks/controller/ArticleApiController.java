@@ -47,8 +47,10 @@ public class ArticleApiController {
             Map<Long, String> articleTemplateMap = articleService.findTemplateMapByType(article.getArticleType());  // 글에 포함된 템플릿 정보
             Member writer = memberService.findByEmail(article.getWriter());
 
+            boolean editableYn = articleService.findEditable(article, request);
+
             return ResponseEntity.ok()
-                    .body(new ArticleResponse(article, articleTemplateMap, writer));
+                    .body(new ArticleResponse(article, articleTemplateMap, writer, editableYn));
 
         } catch (IllegalArgumentException e) {  // 글 id 오류
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

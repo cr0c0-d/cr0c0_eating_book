@@ -39,20 +39,16 @@ public class ArticleService {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글 찾을 수 없음 : " + id));
 
+        boolean editableYn = findEditable(article, request);
+
         if (article.getPublicYn().equals("false")) { // 비공개 글인 경우
-            // 로그인 상태인지 확인
-            boolean validToken = httpHeaderChecker.checkAuthorizationHeader(request);
 
-            if (!validToken) {   // 비로그인 상태
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 throw new AuthenticationCredentialsNotFoundException("로그인 필요");
-            }
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            // 로그인 상태인 경우
-            if(!article.getWriter().equals(authentication.getName())) { //로그인 사용자와 작성자 비교
+            } else if (!editableYn) {
                 throw new AccessDeniedException("조회 권한 없음");
             }
+
         }
         return article;
     }
@@ -95,6 +91,22 @@ public class ArticleService {
             returnMap.put(at.getId(), at.getContent());
         }
         return returnMap;
+    }
+
+    public boolean findEditable(Article article, HttpServletRequest request) {
+        // 로그인 사용자가 관리자이거나 글 작성자일 때 true 반환
+
+        // 로그인 상태인지 확인
+        boolean validToken = httpHeaderChecker.checkAuthorizationHeader(request);
+
+        if (!validToken) {   // 비로그인 상태
+            return false;
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 로그인 상태인 경우 로그인 사용자와 작성자 비교
+        return article.getWriter().equals(authentication.getName());
     }
 
 }

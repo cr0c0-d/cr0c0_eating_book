@@ -22,14 +22,19 @@ public class ArticleResponse {
 
     private Map<Long, String> articleTemplateMap;
 
-    private Member writer;
+    private String writerNickname;
+    //private Member writer;
+
+    // 수정 가능 여부(관리자 or 작성자)
+    private boolean editableYn;
 
 
-    public ArticleResponse(Article article, Map<Long, String> articleTemplateMap, Member writer) {
+    public ArticleResponse(Article article, Map<Long, String> articleTemplateMap, Member writer, boolean editableYn) {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
-        this.writer = writer;
+        //this.writer = writer;
+        this.writerNickname = writer.getNickname();
         this.isbn = article.getIsbn();
         this.writeType = article.getWriteType();
         this.articleType = article.getArticleType();
@@ -39,5 +44,6 @@ public class ArticleResponse {
         this.createdAt = article.getCreatedAt().format(formatter);
         this.updatedAt = article.getUpdatedAt().format(formatter);
         this.articleTemplateMap = articleTemplateMap;
+        this.editableYn = editableYn;
     }
 }
