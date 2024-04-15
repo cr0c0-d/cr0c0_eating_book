@@ -1,13 +1,6 @@
-package me.croco.eatingBooks.api;
+package me.croco.eatingBooks.api.nlgo.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.dto.AladinBookResponse;
-import me.croco.eatingBooks.dto.AladinBooksListResponse;
-import me.croco.eatingBooks.dto.AladinFindRequest;
-import me.croco.eatingBooks.dto.NlgoFindRequest;
-import me.croco.eatingBooks.service.AladinApiService;
-import me.croco.eatingBooks.service.NlgoApiService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

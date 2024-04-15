@@ -1,4 +1,4 @@
-package me.croco.eatingBooks.naver.domain;
+package me.croco.eatingBooks.api.naver.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

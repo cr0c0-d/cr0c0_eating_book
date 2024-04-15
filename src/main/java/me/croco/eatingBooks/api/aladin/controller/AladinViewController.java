@@ -1,9 +1,9 @@
-package me.croco.eatingBooks.api;
+package me.croco.eatingBooks.api.aladin.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.dto.AladinBooksListResponse;
-import me.croco.eatingBooks.dto.AladinFindRequest;
-import me.croco.eatingBooks.service.AladinApiService;
+import me.croco.eatingBooks.api.aladin.dto.AladinBooksListResponse;
+import me.croco.eatingBooks.api.aladin.dto.AladinFindRequest;
+import me.croco.eatingBooks.api.aladin.service.AladinApiService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

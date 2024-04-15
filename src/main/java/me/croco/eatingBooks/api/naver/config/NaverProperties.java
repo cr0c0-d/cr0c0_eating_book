@@ -1,4 +1,4 @@
-package me.croco.eatingBooks.naver.config;
+package me.croco.eatingBooks.api.naver.config;
 
 import lombok.Getter;
 import lombok.Setter;

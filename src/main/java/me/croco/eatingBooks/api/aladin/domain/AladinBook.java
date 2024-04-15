@@ -1,4 +1,4 @@
-package me.croco.eatingBooks.domain;
+package me.croco.eatingBooks.api.aladin.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Book {
+public class AladinBook {
     private String title; // 상품명
     private String link; // 상품 링크 URL
     private String author; // 저자/아티스트

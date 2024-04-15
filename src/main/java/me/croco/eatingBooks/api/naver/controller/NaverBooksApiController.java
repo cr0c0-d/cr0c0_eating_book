@@ -1,10 +1,10 @@
-package me.croco.eatingBooks.naver.controller;
+package me.croco.eatingBooks.api.naver.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.naver.dto.NaverBookFindRequest;
-import me.croco.eatingBooks.naver.dto.NaverBookResponse;
-import me.croco.eatingBooks.naver.dto.NaverBooksListResponse;
-import me.croco.eatingBooks.naver.service.NaverBooksApiService;
+import me.croco.eatingBooks.api.naver.dto.NaverBookResponse;
+import me.croco.eatingBooks.api.naver.dto.NaverBooksListResponse;
+import me.croco.eatingBooks.api.naver.service.NaverBooksApiService;
+import me.croco.eatingBooks.api.naver.dto.NaverBookFindRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

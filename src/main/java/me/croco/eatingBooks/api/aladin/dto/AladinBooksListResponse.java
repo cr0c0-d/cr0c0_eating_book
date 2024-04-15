@@ -1,11 +1,11 @@
-package me.croco.eatingBooks.dto;
+package me.croco.eatingBooks.api.aladin.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import me.croco.eatingBooks.domain.Book;
+import me.croco.eatingBooks.api.aladin.domain.AladinBook;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AladinBookResponse {
+public class AladinBooksListResponse {
     private int version; // API Version
     private String title; // API 결과의 제목
     private String link; // API 결과와 관련된 알라딘 페이지 URL 주소
@@ -28,5 +28,6 @@ public class AladinBookResponse {
 
 
 
-    private Book item;
+    private List<AladinBook> item;
+
 }

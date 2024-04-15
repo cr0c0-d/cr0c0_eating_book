@@ -1,14 +1,13 @@
-package me.croco.eatingBooks.naver.service;
+package me.croco.eatingBooks.api.naver.service;
 
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
-import me.croco.eatingBooks.naver.config.NaverProperties;
-import me.croco.eatingBooks.naver.dto.NaverBookFindRequest;
-import me.croco.eatingBooks.naver.dto.NaverBookResponse;
-import me.croco.eatingBooks.naver.dto.NaverBooksListResponse;
-import me.croco.eatingBooks.util.HttpConnection;
+import me.croco.eatingBooks.api.naver.dto.NaverBookResponse;
+import me.croco.eatingBooks.api.naver.dto.NaverBooksListResponse;
+import me.croco.eatingBooks.api.naver.config.NaverProperties;
+import me.croco.eatingBooks.api.naver.dto.NaverBookFindRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 

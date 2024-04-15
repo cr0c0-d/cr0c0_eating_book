@@ -1,4 +1,4 @@
-package me.croco.eatingBooks.dto;
+package me.croco.eatingBooks.api.naver.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AladinFindRequest {
+public class NaverBookFindRequest {
 
     private String keyword;
     private String queryType;

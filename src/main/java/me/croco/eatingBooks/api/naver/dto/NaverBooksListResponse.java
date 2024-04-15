@@ -1,12 +1,11 @@
-package me.croco.eatingBooks.naver.dto;
+package me.croco.eatingBooks.api.naver.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import me.croco.eatingBooks.domain.Book;
-import me.croco.eatingBooks.naver.domain.NaverBook;
+import me.croco.eatingBooks.api.naver.domain.NaverBook;
 
 import java.util.List;
 
