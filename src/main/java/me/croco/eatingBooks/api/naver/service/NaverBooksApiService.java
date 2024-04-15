@@ -8,6 +8,7 @@ import me.croco.eatingBooks.api.naver.dto.NaverBookResponse;
 import me.croco.eatingBooks.api.naver.dto.NaverBooksListResponse;
 import me.croco.eatingBooks.api.naver.config.NaverProperties;
 import me.croco.eatingBooks.api.naver.dto.NaverBookFindRequest;
+import me.croco.eatingBooks.dto.BookFindRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,7 +37,7 @@ public class NaverBooksApiService {
 
 
 
-    public NaverBooksListResponse searchBooks(NaverBookFindRequest request) {
+    public NaverBookResponse searchBooks(BookFindRequest request) {
 //        String keyword = request.getKeyword();
 //        keyword = keyword.contains(" ") ? keyword.replace(" ", "+") : keyword;  // 검색어에 공백 존재시 '+'로 바꿔서 검색
 
@@ -59,10 +60,10 @@ public class NaverBooksApiService {
         ObjectMapper mapper = JsonMapper.builder()
                                     .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
                                     .build();
-        NaverBooksListResponse response = null;
+        NaverBookResponse response = null;
 
         try {
-            response = mapper.readValue(result, NaverBooksListResponse.class);
+            response = mapper.readValue(result, NaverBookResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
