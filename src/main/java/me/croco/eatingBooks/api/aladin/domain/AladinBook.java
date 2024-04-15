@@ -15,7 +15,7 @@ public class AladinBook {
     private String title; // 상품명
     private String link; // 상품 링크 URL
     private String author; // 저자/아티스트
-    private String pubdate; // 출간일(출시일)
+    private String pubDate; // 출간일(출시일)
     private String description; // 상품설명 (요약)
     private String isbn; // 10자리 ISBN
     private String isbn13; // 13자리 ISBN

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.croco.eatingBooks.api.aladin.domain.AladinBook;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,7 +26,5 @@ public class AladinBookResponse {
     private int searchCategoryId; // 분야로 조회한 경우 해당 분야의 ID
     private String searchCategoryName; // 분야로 조회한 경우 해당 분야의 분야명
 
-
-
-    private AladinBook item;
+    private List<AladinBook> item;
 }

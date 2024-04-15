@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.api.aladin.dto.AladinBookResponse;
-import me.croco.eatingBooks.api.aladin.dto.AladinBooksListResponse;
-import me.croco.eatingBooks.api.aladin.dto.AladinFindRequest;
+import me.croco.eatingBooks.dto.BookFindRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -50,34 +49,40 @@ public class AladinApiService {
 
 
 
-    public AladinBooksListResponse searchBooks(AladinFindRequest request) {
+    public AladinBookResponse searchBooks(BookFindRequest request) {
         String keyword = request.getKeyword();
         keyword = keyword.contains(" ") ? keyword.replace(" ", "+") : keyword;  // 검색어에 공백 존재시 '+'로 바꿔서 검색
 
         int start = request.getStart();
         start = start == 0 ? 1 : start;
 
-        HttpURLConnection httpURLConnection = getHttpURLConnection(findUrl + "?ttbkey=" + ttbKey
-                + "&Query=" + keyword
-                + "&QueryType=" + request.getQueryType()
-                + "&Start=" +  start    // 페이지
-                
-                + "&Sort=SalesPoint"    // 정렬 순서(판매량 순)
-                + "&Version=20131101"   // 검색 API 버전
-                + "&Cover=Big"  // 표지 이미지 크기
-                + "&MaxResults=10"  // 한 페이지 최대 출력 개수
-                + "&SearchTarget=Book"  // 검색 대상 : 도서
-                + "&output=js"   // 검색 결과 : JSON
-        );
+        String apiUrl = UriComponentsBuilder.fromUriString(findUrl)
+                .queryParam("ttbkey", ttbKey)
+                .queryParam("Query", keyword)
+                .queryParam("QueryType", request.getQueryType())
+                .queryParam("Start", start)
+
+                .queryParam("Sort", "SalesPoint")   // 정렬 순서(판매량 순)
+                .queryParam("Version", "20131101")  // 검색 API 버전
+                .queryParam("Cover", "Big") // 표지 이미지 크기
+                .queryParam("MaxResults", 10)   // 한 페이지 최대 출력 개수
+                .queryParam("SearchTarget", "Book") // 검색 대상 : 도서
+                .queryParam("output", "js") // 검색 결과 : JSON
+
+                .build()
+                .encode()
+                .toUriString();
+
+        HttpURLConnection httpURLConnection = getHttpURLConnection(apiUrl);
         String result = getHttpResponse(httpURLConnection);
 
         ObjectMapper mapper = JsonMapper.builder()
                                     .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
                                     .build();
-        AladinBooksListResponse response = null;
+        AladinBookResponse response = null;
 
         try {
-            response = mapper.readValue(result, AladinBooksListResponse.class);
+            response = mapper.readValue(result, AladinBookResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
