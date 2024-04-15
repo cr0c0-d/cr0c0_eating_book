@@ -53,8 +53,10 @@ public class WebOAuthSecurityConfig {
                                 .requestMatchers(
                                         "/signup", "/login", // 로그인
                                         "/api/token", // 토큰 발급
-                                        "/api/books", // 책 검색
-                                        "/api/books/{id}",  // 책 상세 정보 조회
+//                                        "/api/books", // 책 검색
+//                                        "/api/books/{id}",  // 책 상세 정보 조회
+                                        "/api/books",   //책 검색
+                                        "/api/books/**",    // 책 하위 API
                                         "/api/articles" // 글 목록 조회
                                 ).permitAll()
 
