@@ -57,7 +57,8 @@ public class WebOAuthSecurityConfig {
 //                                        "/api/books/{id}",  // 책 상세 정보 조회
                                         "/api/books",   //책 검색
                                         "/api/books/**",    // 책 하위 API
-                                        "/api/articles" // 글 목록 조회
+                                        "/api/articles", // 글 목록 조회
+                                        "/api/articles/book/{isbn}" // 도서별 글 조회
                                 ).permitAll()
 
                                 .requestMatchers(

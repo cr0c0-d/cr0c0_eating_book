@@ -16,4 +16,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query("SELECT a.isbn, COUNT(a.id) as count FROM Article a WHERE a.articleType = 'A' GROUP BY a.isbn ORDER BY count DESC")
     List<Object[]> findBestIsbnAfterArticle(Pageable pageable);
+
+    List<Article> findByIsbnOrderByCreatedAtDesc(String isbn);
 }

@@ -109,4 +109,8 @@ public class ArticleService {
         return article.getWriter().equals(authentication.getName());
     }
 
+    public List<Article> findAllArticlesByIsbn(String isbn) {
+        return articleRepository.findByIsbnOrderByCreatedAtDesc(isbn);
+    }
+
 }

@@ -102,4 +102,18 @@ public class ArticleApiController {
                 .body(articleTemplates);
 
     }
+
+    @GetMapping("/api/articles/book/{isbn}")
+    public ResponseEntity<List<ArticleListResponse>> findAllArticlesByIsbn(@PathVariable String isbn) {
+        List<Article> articleList = articleService.findAllArticlesByIsbn(isbn);
+
+        List<ArticleListResponse> articleResponseList = articleList
+                .stream()
+                .map((article) -> new ArticleListResponse(article, memberService.findByEmail(article.getWriter()).getNickname()))
+                .toList();
+
+        return ResponseEntity.ok()
+                .body(articleResponseList);
+    }
+
 }
