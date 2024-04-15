@@ -1,6 +1,11 @@
 package me.croco.eatingBooks.api.aladin.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.croco.eatingBooks.api.aladin.dto.AladinBookResponse;
+import me.croco.eatingBooks.api.aladin.dto.AladinBooksListResponse;
+import me.croco.eatingBooks.api.aladin.dto.AladinFindRequest;
+import me.croco.eatingBooks.api.aladin.service.AladinApiService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
