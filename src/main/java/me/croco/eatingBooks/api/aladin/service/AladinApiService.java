@@ -117,9 +117,38 @@ public class AladinApiService {
             e.printStackTrace();
         }
         return response;
+    }
 
+    public AladinBookResponse findBestSellerList() {
+        String apiUrl = UriComponentsBuilder.fromUriString(findListUrl)
+                .queryParam("ttbkey", ttbKey)
+                .queryParam("QueryType", "Bestseller")  // 베스트 셀러
+                .queryParam("SearchTarget", "Book")  // 검색 대상 : 도서
+                .queryParam("Start", 1)  // 시작 페이지 : 1
+                .queryParam("MaxResults", 10)  // 한 페이지당 출력 개수 : 10
+                .queryParam("Cover", "Big") // 이미지 크기
+                .queryParam("Output", "js")
+                .queryParam("Version", "20131101")
+                .build()
+                .encode()
+                .toUriString();
 
+        HttpURLConnection httpURLConnection = getHttpURLConnection(apiUrl);
 
+        String result = getHttpResponse(httpURLConnection);
+
+        ObjectMapper mapper = JsonMapper.builder()
+                .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
+                .build();
+
+        AladinBookResponse response = null;
+
+        try {
+            response = mapper.readValue(result, AladinBookResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
 }
