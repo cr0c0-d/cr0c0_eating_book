@@ -31,28 +31,11 @@ public class MemberService implements UserDetailsService {
     }
 
     public List<Member> findAll() {
-        // 로그인 사용자가 ADMIN인지 확인
-        String loginUserAuthority = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().get(0);
-        if(loginUserAuthority.equals(Authorities.ROLE_ADMIN.getAuthorityName())) { // admin 아님 -> 조회 권한 없음
-            throw new AccessDeniedException("조회 권한 없음");
-        } else {
-            return memberRepository.findAll();
-        }
+        return memberRepository.findAll();
     }
 
     public Member findById(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 id : " + id));
-        Authentication loginUser = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인 사용자가 admin이 아니고, 로그인 사용자의 정보를 조회하는 것도 아닌 경우
-        if(!loginUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().get(0).equals(Authorities.ROLE_ADMIN.getAuthorityName())
-                &&
-                !member.getEmail().equals(loginUser.getName())) {
-            throw new AccessDeniedException("조회 권한 없음");
-
-        } else {    // admin이거나, 본인 정보를 조회하는 경우
-            return member;
-        }
+        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 id : " + id));
     }
 
     public Member findByEmail(String email) {
