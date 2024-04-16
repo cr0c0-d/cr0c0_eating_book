@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.ArticleTemplate;
 import me.croco.eatingBooks.domain.Member;
-import me.croco.eatingBooks.dto.ArticleAddRequest;
-import me.croco.eatingBooks.dto.ArticleListResponse;
-import me.croco.eatingBooks.dto.ArticleResponse;
-import me.croco.eatingBooks.dto.ArticleUpdateRequest;
+import me.croco.eatingBooks.dto.*;
 import me.croco.eatingBooks.service.ArticleService;
 import me.croco.eatingBooks.service.MemberService;
 import org.apache.coyote.Response;
@@ -47,7 +44,7 @@ public class ArticleApiController {
             Map<Long, String> articleTemplateMap = articleService.findTemplateMapByType(article.getArticleType());  // 글에 포함된 템플릿 정보
             Member writer = memberService.findByEmail(article.getWriter());
 
-            boolean editableYn = articleService.findEditable(article, request);
+            boolean editableYn = articleService.findEditable(article.getWriter(), request);
 
             return ResponseEntity.ok()
                     .body(new ArticleResponse(article, articleTemplateMap, writer, editableYn));
@@ -117,17 +114,15 @@ public class ArticleApiController {
     }
 
     @GetMapping("/api/articles/member/{id}")
-    public ResponseEntity<List<ArticleListResponse>> findPublicArticlesByMember(@PathVariable Long id) {
+    public ResponseEntity<MemberArticleFindResponse> findPublicArticlesByMember(@PathVariable Long id, HttpServletRequest request) {
         Member member = memberService.findById(id);
-        List<Article> articleList = articleService.findPublicArticlesByMember(member.getEmail());
 
-        List<ArticleListResponse> articleResponseList = articleList
-                .stream()
-                .map((article) -> new ArticleListResponse(article, member.getNickname()))
-                .toList();
+        List<Article> articleList = articleService.findAllArticlesByMemberId(id, request);
+
+        boolean includePrivateArticles = articleService.findEditable(member.getEmail(), request);
 
         return ResponseEntity.ok()
-                .body(articleResponseList);
+                .body(new MemberArticleFindResponse(member, articleList, includePrivateArticles));
     }
 
 }

@@ -23,6 +23,8 @@ public class ArticleResponse {
     private Map<Long, String> articleTemplateMap;
 
     private String writerNickname;
+    private Long writerId;
+    private String writerImg;
     //private Member writer;
 
     // 수정 가능 여부(관리자 or 작성자)
@@ -35,6 +37,8 @@ public class ArticleResponse {
         this.content = article.getContent();
         //this.writer = writer;
         this.writerNickname = writer.getNickname();
+        this.writerId = writer.getId();
+        this.writerImg = writer.getProfileImg();
         this.isbn = article.getIsbn();
         this.writeType = article.getWriteType();
         this.articleType = article.getArticleType();

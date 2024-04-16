@@ -8,5 +8,5 @@ public interface ArticleQueryDSLRepository {
 
     List<Article> findByIsbnOrderByCreatedAtDesc(String isbn);
 
-    List<Article> findPublicArticlesByMember(String email);
+    List<Article> findAllArticlesByMemberId(Long id);
 }

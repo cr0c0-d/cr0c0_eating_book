@@ -24,12 +24,22 @@ public class ArticleQueryDSLRepositoryImpl implements ArticleQueryDSLRepository 
                 .fetch();
     }
 
+//
+//    @Override
+//    public List<Article> findPublicArticlesByMember(String email) {
+//        QArticle qArticle = QArticle.article;
+//        return jpaQueryFactory.selectFrom(qArticle)
+//                .where(qArticle.writer.eq(email), qArticle.publicYn.eq("true"))
+//                .orderBy(qArticle.createdAt.desc())
+//                .fetch();
+//    }
+
     @Override
-    public List<Article> findPublicArticlesByMember(String email) {
-        QArticle qArticle = QArticle.article;
-        return jpaQueryFactory.selectFrom(qArticle)
-                .where(qArticle.writer.eq(email), qArticle.publicYn.eq("true"))
-                .orderBy(qArticle.createdAt.desc())
+    public List<Article> findAllArticlesByMemberId(Long id) {
+        return jpaQueryFactory.selectFrom(QArticle.article)
+                .innerJoin(QMember.member)
+                .on(QArticle.article.writer.eq(QMember.member.email), QMember.member.id.eq(id))
                 .fetch();
     }
+
 }

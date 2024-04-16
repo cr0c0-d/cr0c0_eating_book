@@ -39,7 +39,7 @@ public class ArticleService {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글 찾을 수 없음 : " + id));
 
-        boolean editableYn = findEditable(article, request);
+        boolean editableYn = findEditable(article.getWriter(), request);
 
         if (article.getPublicYn().equals("false")) { // 비공개 글인 경우
 
@@ -93,7 +93,14 @@ public class ArticleService {
         return returnMap;
     }
 
-    public boolean findEditable(Article article, HttpServletRequest request) {
+    /**
+     * 대상 사용자와 로그인 사용자의 동일 여부 반환
+     * 
+     * @param targetMemberEmail 대상 사용자 이메일
+     * @param request
+     * @return
+     */
+    public boolean findEditable(String targetMemberEmail, HttpServletRequest request) {
         // 로그인 사용자가 관리자이거나 글 작성자일 때 true 반환
 
         // 로그인 상태인지 확인
@@ -106,15 +113,15 @@ public class ArticleService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인 상태인 경우 로그인 사용자와 작성자 비교
-        return article.getWriter().equals(authentication.getName());
+        return targetMemberEmail.equals(authentication.getName());
     }
 
     public List<Article> findAllArticlesByIsbn(String isbn) {
         return articleRepository.findByIsbnOrderByCreatedAtDesc(isbn);
     }
 
-    public List<Article> findPublicArticlesByMember(String email) {
-        return articleRepository.findPublicArticlesByMember(email);
+    public List<Article> findAllArticlesByMemberId(Long id, HttpServletRequest request) {
+        return articleRepository.findAllArticlesByMemberId(id);
     }
 
 }

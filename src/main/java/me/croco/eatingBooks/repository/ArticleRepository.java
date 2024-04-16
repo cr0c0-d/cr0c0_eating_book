@@ -22,4 +22,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 
 //    @Query("SELECT a FROM Article a WHERE a.publicYn = 'true' AND a.writer = ? ORDER BY a.createdAt DESC")
 //    List<Article> findPublicArticlesByMember(String email);
+
 }
