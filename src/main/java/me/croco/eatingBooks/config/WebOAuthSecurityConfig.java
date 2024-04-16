@@ -57,12 +57,14 @@ public class WebOAuthSecurityConfig {
 //                                        "/api/books/{id}",  // 책 상세 정보 조회
                                         "/api/books",   //책 검색
                                         "/api/books/**",    // 책 하위 API
-                                        "/api/articles", // 글 목록 조회
-                                        "/api/articles/book/{isbn}" // 도서별 글 조회
+                                        "/api/articles" // 글 목록 조회
+//                                        "/api/articles/book/{isbn}", // 도서별 글 조회
+//                                        "/api/articles/member/{id}" // 사용자별 글 조회
                                 ).permitAll()
 
                                 .requestMatchers(
-                                        new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.GET.name()), // 글 조회만 허용
+                                        //new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.GET.name()), // 글 조회만 허용
+                                        new AntPathRequestMatcher("/api/articles/**", HttpMethod.GET.name()), // GET 요청은 모두 허용
                                         new AntPathRequestMatcher("/api/members/", HttpMethod.POST.name())  // 회원가입만 허용
                                 ).permitAll()
 
@@ -165,9 +167,9 @@ public class WebOAuthSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 오리진 설정
+        //configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 오리진 설정
         configuration.addAllowedOrigin("http://25.10.86.27:3000");
-        configuration.addAllowedOrigin("http://192.168.0.2:3000");
+        //configuration.addAllowedOrigin("http://192.168.0.2:3000");
         configuration.addAllowedMethod("*"); // 모든 HTTP 메소드 허용
         configuration.addAllowedHeader("Content-Type"); // 헤더 허용
         configuration.addAllowedHeader("Authorization"); // 헤더 허용
