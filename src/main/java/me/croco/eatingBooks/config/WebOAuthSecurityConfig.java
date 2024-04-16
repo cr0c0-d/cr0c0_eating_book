@@ -68,6 +68,7 @@ public class WebOAuthSecurityConfig {
                                         new AntPathRequestMatcher("/api/members/", HttpMethod.POST.name())  // 회원가입만 허용
                                 ).permitAll()
 
+                                .requestMatchers("/api/articles/templates/**").authenticated()  // 글 작성시 템플릿 조회 요청은 인증 필요
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll()
 
