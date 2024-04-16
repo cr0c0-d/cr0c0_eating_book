@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleQueryDSLRepository {
     @Query("SELECT a FROM Article a WHERE a.publicYn = 'true' ORDER BY a.createdAt DESC ")
     List<Article> findPublicArticles();
 
@@ -16,6 +16,10 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query("SELECT a.isbn, COUNT(a.id) as count FROM Article a WHERE a.articleType = 'A' GROUP BY a.isbn ORDER BY count DESC")
     List<Object[]> findBestIsbnAfterArticle(Pageable pageable);
+//
+//    @Query("SELECT a FROM Article a WHERE a.publicYn = 'true' AND a.isbn = ? ORDER BY a.createdAt DESC")
+//    List<Article> findByIsbnOrderByCreatedAtDesc(String isbn);
 
-    List<Article> findByIsbnOrderByCreatedAtDesc(String isbn);
+//    @Query("SELECT a FROM Article a WHERE a.publicYn = 'true' AND a.writer = ? ORDER BY a.createdAt DESC")
+//    List<Article> findPublicArticlesByMember(String email);
 }

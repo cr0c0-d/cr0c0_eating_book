@@ -1,3 +1,8 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.2'   // 스프링 부트 플러그인
@@ -18,13 +23,13 @@ dependencies {
 
     // 스프링 데이터 JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
     runtimeOnly 'com.h2database:h2' // 인메모리 데이터베이스
     compileOnly 'org.projectlombok:lombok'  // 롬복
     annotationProcessor 'org.projectlombok:lombok'
 
     // 타임리프
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
 
     // 스프링 시큐리티를 사용하기 위한 스타터 추가
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -35,12 +40,14 @@ dependencies {
     // 스프링 시큐리티를 테스트하기 위한 의존성 추가
     testImplementation 'org.springframework.security:spring-security-test'
 
-
     // JWT 서비스 구현
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.projectlombok:lombok'
     implementation 'io.jsonwebtoken:jjwt:0.9.1' // 자바 JWT 라이브러리
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'  // jax-api :  XML 문서와 Java 객체 간 매핑 자동화
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'  // JAXB : XML 문서와 Java 객체 간 매핑 자동화
+    implementation 'javax.activation:activation:1.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.0.1'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
 
     // mysql connector
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -51,9 +58,39 @@ dependencies {
     // OAuth2 사용
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+
+    // java 컴파일러 플러그인
+    annotationProcessor (
+            "jakarta.annotation:jakarta.annotation-api", // java.lang.NoClassDefFoundError (javax.annotation.Generated) 에러 대응 코드
+            "jakarta.persistence:jakarta.persistence-api", // java.lang.NoClassDefFoundError (javax.annotation.Entity) 에러 대응 코드
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta", // Annotation Processing Tool(APT) -> entity 클래스 기반 Q타입 소스 생성
+            'org.projectlombok:lombok'
+    )
+
 }
 
 test {
     useJUnitPlatform()
     systemProperty "jasypt.encryptor.password", System.getProperties().get("jasypt.encryptor.password")
+}
+
+// Q클래스 생성을 위한 설정 추가
+def querydslDir = "$projectDir/build/generated/querydsl"
+
+// Q클래스 위치 지정
+sourceSets {
+    main.java.srcDirs querydslDir
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+
+clean {
+    delete querydslDir
 }
