@@ -116,4 +116,18 @@ public class ArticleApiController {
                 .body(articleResponseList);
     }
 
+    @GetMapping("/api/articles/member/{id}")
+    public ResponseEntity<List<ArticleListResponse>> findPublicArticlesByMember(@PathVariable Long id) {
+        Member member = memberService.findById(id);
+        List<Article> articleList = articleService.findPublicArticlesByMember(member.getEmail());
+
+        List<ArticleListResponse> articleResponseList = articleList
+                .stream()
+                .map((article) -> new ArticleListResponse(article, member.getNickname()))
+                .toList();
+
+        return ResponseEntity.ok()
+                .body(articleResponseList);
+    }
+
 }

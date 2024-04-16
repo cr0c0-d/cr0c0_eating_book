@@ -113,4 +113,8 @@ public class ArticleService {
         return articleRepository.findByIsbnOrderByCreatedAtDesc(isbn);
     }
 
+    public List<Article> findPublicArticlesByMember(String email) {
+        return articleRepository.findPublicArticlesByMember(email);
+    }
+
 }
