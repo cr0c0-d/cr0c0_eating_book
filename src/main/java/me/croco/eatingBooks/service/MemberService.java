@@ -25,6 +25,8 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
+    private final String DEFAULT_PROFILE_IMAGE = "https://i.ibb.co/LzfM6Mx/member1712982423627.jpg";
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByEmail(username).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 email : " + username));
@@ -54,6 +56,7 @@ public class MemberService implements UserDetailsService {
                                 .email(request.getEmail())
                                 .nickname(request.getNickname())
                                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                                .profileImg(DEFAULT_PROFILE_IMAGE)
                                 .authorities(Authorities.ROLE_USER)
                                 .build()
                 )
