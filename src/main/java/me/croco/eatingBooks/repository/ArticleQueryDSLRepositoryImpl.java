@@ -39,6 +39,7 @@ public class ArticleQueryDSLRepositoryImpl implements ArticleQueryDSLRepository 
         return jpaQueryFactory.selectFrom(QArticle.article)
                 .innerJoin(QMember.member)
                 .on(QArticle.article.writer.eq(QMember.member.email), QMember.member.id.eq(id))
+                .orderBy(QArticle.article.createdAt.desc())
                 .fetch();
     }
 
