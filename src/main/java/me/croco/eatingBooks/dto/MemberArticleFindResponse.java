@@ -20,11 +20,11 @@ public class MemberArticleFindResponse {
         this.nickname = member.getNickname();
         this.profileImg = member.getProfileImg();
         this.articlesAllCount = articleList.size();
-        this.publicArticleList = articleList.stream().filter((article) -> article.getPublicYn().equals("true")).map((article) -> new ArticleListResponse(article, member.getNickname())).toList();
+        this.publicArticleList = articleList.stream().filter((article) -> article.getPublicYn().equals("true")).map((article) -> new ArticleListResponse(article, member)).toList();
 
         this.privateArticleList =
                 includePrivateArticles
-                ? articleList.stream().filter((article) -> article.getPublicYn().equals("false")).map((article) -> new ArticleListResponse(article, member.getNickname())).toList()
+                ? articleList.stream().filter((article) -> article.getPublicYn().equals("false")).map((article) -> new ArticleListResponse(article, member)).toList()
                 : null;
     }
 }

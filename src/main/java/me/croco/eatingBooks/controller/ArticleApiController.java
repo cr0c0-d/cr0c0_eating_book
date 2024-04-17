@@ -67,7 +67,7 @@ public class ArticleApiController {
 
         List<ArticleListResponse> articleResponseList = articleList
                 .stream()
-                .map((article) -> new ArticleListResponse(article, memberService.findByEmail(article.getWriter()).getNickname()))
+                .map((article) -> new ArticleListResponse(article, memberService.findByEmail(article.getWriter())))
                 .toList();
 
         return ResponseEntity.ok()
@@ -106,7 +106,7 @@ public class ArticleApiController {
 
         List<ArticleListResponse> articleResponseList = articleList
                 .stream()
-                .map((article) -> new ArticleListResponse(article, memberService.findByEmail(article.getWriter()).getNickname()))
+                .map((article) -> new ArticleListResponse(article, memberService.findByEmail(article.getWriter())))
                 .toList();
 
         return ResponseEntity.ok()
