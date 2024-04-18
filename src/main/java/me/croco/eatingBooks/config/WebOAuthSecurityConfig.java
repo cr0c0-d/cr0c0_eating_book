@@ -7,6 +7,7 @@ import me.croco.eatingBooks.config.oauth.OAuth2UserCustomService;
 import me.croco.eatingBooks.repository.RefreshTokenRepository;
 import me.croco.eatingBooks.service.MemberService;
 import me.croco.eatingBooks.util.HttpHeaderChecker;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -35,6 +36,9 @@ public class WebOAuthSecurityConfig {
     private final MemberService memberService;
 
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    @Value("${eatingbooks.croco.front}")
+    private String origin;
 
     // 스프링 시큐리티 기능 비활성화
     @Bean
@@ -169,7 +173,8 @@ public class WebOAuthSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         //configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 오리진 설정
-        configuration.addAllowedOrigin("http://25.10.86.27:3000");
+        //configuration.addAllowedOrigin("http://25.10.86.27:3000");
+        configuration.addAllowedOrigin(origin);
         //configuration.addAllowedOrigin("http://192.168.0.2:3000");
         configuration.addAllowedMethod("*"); // 모든 HTTP 메소드 허용
         configuration.addAllowedHeader("Content-Type"); // 헤더 허용
