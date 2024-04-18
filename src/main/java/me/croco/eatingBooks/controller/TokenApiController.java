@@ -1,4 +1,4 @@
-package me.croco.eatingBooks.api;
+package me.croco.eatingBooks.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.dto.AccessTokenCreateRequest;
