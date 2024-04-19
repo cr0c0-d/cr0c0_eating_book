@@ -1,0 +1,79 @@
+#logging:
+#  level:
+#    root: DEBUG
+#    jasypt: DEBUG
+spring:
+  sql:
+    init:
+      encoding: utf-8
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    # 전송 쿼리 확인
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
+        format_sql: true
+
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    sql-script-encoding: utf-8
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(UQ3PMQLthZmySO2ibFEyOyRC3ilP3iccfweRbN1q3RN9AnNYm3VnGeYlLuQXpKuLbvCMJtq+dSbMmvZR4va/m6IVC4SKsjXyoyo9Adr/qthKKiw9FW+mhQ4bd4ZFca8+)
+            client-secret: ENC(3wrcwmN4d296K+Zyr6LcGTg5Zl+4XuvBrzB6OJYdRqC+SmykR4JkpwD2tCqNHUwTLRKuoDtsRRI=)
+            scope:
+              - email
+              - profile
+
+          kakao:
+            client_id: ENC(wUy7wK2KHrMjGMyAH30O+7I2ecLiTnHZvXl7U7aRRAzMBCskqpFiK+zE+Ixp/mUIYIQVNd5CLbI=)
+            redirect_uri: http://localhost:8080/oauth2/kakao
+            response_type: code
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: openid, profile_nickname, profile_image, account_email
+
+          naver:
+            client_id : ENC(3IHoYU4aMmaFoYT1sbRHtNPKkUbS6R7dBnPLEQht0Gj+HVgyYJ/fKw==)
+            client-secret: ENC(40Trp1nyJ8Sd7wqLRv0XK+ho+PifHnrpl0sNBZZISZM=)
+            response_type: code
+            redirect_uri: http://localhost:8080/oauth2/naver
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+          naver:
+            authorization-uri: https://nid.naver.com/oauth2.0/authorize
+            token-uri: https://nid.naver.com/oauth2.0/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+
+
+jwt:
+  issuer: cr0c0
+  secret_key: ENC(/BCY1rKWxF49AOfCLtGSlj0ygUf9kk+70Rc/NNnp0CNrDvTquUkAOZl1IFS5fYef)
+
+file:
+  upload:
+    path: resources/static/image/
+
+apiKey:
+  aladin: ENC(qlX7ujIj5Q43k1Z6WOB9Rfnm5swpp4BVOAJKsaEkt+iQzzg+X0k85g==)
+  imgBB: ENC(3COeQD3IOuvV9sLL+5enqxsw4xa6qSb1w40h9o292kD8V3wEayy2c70idONz7LejasdFT3AKJuY=)
