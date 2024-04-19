@@ -43,7 +43,7 @@ public class MemberApiController {
         // 로그인 사용자가 ADMIN인지 확인
         String loginUserAuthority = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().get(0);
 
-        if(loginUserAuthority.equals(Authorities.ROLE_ADMIN.getAuthorityName())) { // admin 아님 -> 조회 권한 없음
+        if(!loginUserAuthority.equals(Authorities.ROLE_ADMIN.getAuthorityName())) { // admin 아님 -> 조회 권한 없음
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .build();

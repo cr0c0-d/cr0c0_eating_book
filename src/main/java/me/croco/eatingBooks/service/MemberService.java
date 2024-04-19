@@ -33,7 +33,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public List<Member> findAll() {
-        return memberRepository.findAll();
+        return memberRepository.findAllOrderByCreatedAtDesc();
     }
 
     public Member findById(Long id) {
