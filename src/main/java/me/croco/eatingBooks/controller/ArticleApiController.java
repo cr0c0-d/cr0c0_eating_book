@@ -101,8 +101,8 @@ public class ArticleApiController {
     }
 
     @GetMapping("/api/articles/book/{isbn}")
-    public ResponseEntity<List<ArticleListResponse>> findAllArticlesByIsbn(@PathVariable String isbn) {
-        List<Article> articleList = articleService.findAllArticlesByIsbn(isbn);
+    public ResponseEntity<List<ArticleListResponse>> findPublicArticlesByIsbn(@PathVariable String isbn) {
+        List<Article> articleList = articleService.findPublicArticlesByIsbnOrderByCreatedAtDesc(isbn);
 
         List<ArticleListResponse> articleResponseList = articleList
                 .stream()
@@ -114,7 +114,7 @@ public class ArticleApiController {
     }
 
     @GetMapping("/api/articles/member/{id}")
-    public ResponseEntity<MemberArticleFindResponse> findPublicArticlesByMember(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<MemberArticleFindResponse> findArticlesByMember(@PathVariable Long id, HttpServletRequest request) {
         Member member = memberService.findById(id);
 
         List<Article> articleList = articleService.findAllArticlesByMemberId(id, request);

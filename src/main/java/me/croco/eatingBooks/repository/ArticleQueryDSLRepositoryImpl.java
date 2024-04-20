@@ -16,7 +16,7 @@ public class ArticleQueryDSLRepositoryImpl implements ArticleQueryDSLRepository 
     }
 
     @Override
-    public List<Article> findByIsbnOrderByCreatedAtDesc(String isbn) {
+    public List<Article> findPublicArticlesByIsbnOrderByCreatedAtDesc(String isbn) {
         QArticle qArticle = QArticle.article;
         return jpaQueryFactory.selectFrom(qArticle)
                 .where(qArticle.isbn.eq(isbn), qArticle.publicYn.eq("true"))

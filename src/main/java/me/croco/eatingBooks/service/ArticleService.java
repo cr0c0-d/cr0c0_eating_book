@@ -8,10 +8,12 @@ import me.croco.eatingBooks.dto.ArticleAddRequest;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.repository.ArticleRepository;
 import me.croco.eatingBooks.repository.ArticleTemplatesRepository;
+import me.croco.eatingBooks.util.Authorities;
 import me.croco.eatingBooks.util.HttpHeaderChecker;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,15 +115,19 @@ public class ArticleService {
             }
         }
 
-
         authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 관리자 권한인 경우 true 반환
+        if(authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch((authority) -> authority.equals(Authorities.ROLE_ADMIN.getAuthorityName()))) {
+            return true;
+        }
 
         // 로그인 상태인 경우 로그인 사용자와 작성자 비교
         return targetMemberEmail.equals(authentication.getName());
     }
 
-    public List<Article> findAllArticlesByIsbn(String isbn) {
-        return articleRepository.findByIsbnOrderByCreatedAtDesc(isbn);
+    public List<Article> findPublicArticlesByIsbnOrderByCreatedAtDesc(String isbn) {
+        return articleRepository.findPublicArticlesByIsbnOrderByCreatedAtDesc(isbn);
     }
 
     public List<Article> findAllArticlesByMemberId(Long id, HttpServletRequest request) {

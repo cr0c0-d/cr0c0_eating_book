@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ArticleQueryDSLRepository {
 
-    List<Article> findByIsbnOrderByCreatedAtDesc(String isbn);
+    List<Article> findPublicArticlesByIsbnOrderByCreatedAtDesc(String isbn);
 
     List<Article> findAllArticlesByMemberId(Long id);
 }
