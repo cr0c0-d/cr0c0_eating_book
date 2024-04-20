@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Article;
 import me.croco.eatingBooks.domain.ArticleTemplate;
+import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
 import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.repository.ArticleRepository;
@@ -44,8 +45,8 @@ public class ArticleService {
         boolean editableYn = findEditable(article.getWriter(), request);
 
         if (article.getPublicYn().equals("false")) { // 비공개 글인 경우
-
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (!(authentication.getPrincipal() instanceof Member)) {
                 throw new AuthenticationCredentialsNotFoundException("로그인 필요");
             } else if (!editableYn) {
                 throw new AccessDeniedException("조회 권한 없음");
