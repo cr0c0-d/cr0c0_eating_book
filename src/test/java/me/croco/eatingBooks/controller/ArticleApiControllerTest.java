@@ -43,9 +43,6 @@ class ArticleApiControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
     private ArticleRepository articleRepository;
 
     @Autowired
@@ -60,11 +57,7 @@ class ArticleApiControllerTest {
     Member loginMember;
 
     void setLoginMember(String role) {
-        Authorities authorities = Authorities.ROLE_USER;
-
-        if (role.equals("admin")) {
-            authorities = Authorities.ROLE_ADMIN;
-        }
+        Authorities authorities = role.equals("admin") ? Authorities.ROLE_ADMIN : Authorities.ROLE_USER;
 
         loginMember = memberRepository.save(Member.builder()
                 .nickname(role)
@@ -77,10 +70,6 @@ class ArticleApiControllerTest {
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken(loginMember, loginMember.getPassword(), loginMember.getAuthorities()));
 
-    }
-    @BeforeEach
-    public void mockMvcSetUp() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @BeforeEach
@@ -241,7 +230,7 @@ class ArticleApiControllerTest {
         setLoginMember("user");
         Article article = articleRepository.save(testArticle(Map.of("publicYn", "false")));
 
-        SecurityContextHolder.clearContext();
+        SecurityContextHolder.getContext().setAuthentication(null);
 
         final String url = "/api/articles/";
 

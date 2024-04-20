@@ -42,20 +42,13 @@ class MemberApiControllerTest {
     protected MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final String DEFAULT_PROFILE_IMAGE = "https://i.ibb.co/LzfM6Mx/member1712982423627.jpg";
-
-    @BeforeEach
-    public void mockMvcSetUp() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-    }
+    private static final String DEFAULT_PROFILE_IMAGE = "https://i.ibb.co/LzfM6Mx/member1712982423627.jpg";
+    private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @BeforeEach
     public void deleteAll() {
@@ -65,17 +58,14 @@ class MemberApiControllerTest {
     Member loginMember;
 
     void setLoginMember(String role) {
-        Authorities authorities = Authorities.ROLE_USER;
-
-        if (role.equals("admin")) {
-            authorities = Authorities.ROLE_ADMIN;
-        }
+        Authorities authorities = role.equals("admin") ? Authorities.ROLE_ADMIN : Authorities.ROLE_USER;
 
         loginMember = memberRepository.save(Member.builder()
                 .nickname(role)
                 .email(role+"@gmail.com")
                 .password(role)
                 .authorities(authorities)
+                .profileImg(DEFAULT_PROFILE_IMAGE)
                 .build()
         );
 
@@ -95,8 +85,6 @@ class MemberApiControllerTest {
         final MemberAddRequest request = new MemberAddRequest(email, password, nickname);
 
         final String requestBody = objectMapper.writeValueAsString(request);
-
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
         // when
         ResultActions result = mockMvc.perform(post(url)
@@ -202,16 +190,15 @@ class MemberApiControllerTest {
     @Test
     void updateMember() throws Exception {
         // Given
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         final String url = "/api/members";
 
-        Member member = createMember();
-
+        //Member member = createMember();
+        setLoginMember("user");
         String newPassword = "updatedPassword";
         String newNickname = "수정된 닉네임";
         String newProfileImg = "수정된 이미지";
 
-        MemberUpdateRequest request = new MemberUpdateRequest(member.getId(), member.getEmail(), newPassword, newNickname, newProfileImg);
+        MemberUpdateRequest request = new MemberUpdateRequest(loginMember.getId(), loginMember.getEmail(), newPassword, newNickname, newProfileImg);
 
         String requestBody = objectMapper.writeValueAsString(request);
 
@@ -223,7 +210,7 @@ class MemberApiControllerTest {
 
         // Then
         result.andExpect(status().isOk());
-        Member updatedMember = memberRepository.findById(member.getId()).get();
+        Member updatedMember = memberRepository.findById(loginMember.getId()).get();
         assertThat(bCryptPasswordEncoder.matches(newPassword, updatedMember.getPassword())).isTrue();
         assertThat(updatedMember.getNickname()).isEqualTo(newNickname);
         assertThat(updatedMember.getProfileImg()).isEqualTo(newProfileImg);
@@ -231,7 +218,6 @@ class MemberApiControllerTest {
 
     // 테스트용 멤버 삽입
     Member createMember() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         return memberRepository.save(
                 Member.builder()
                         .email("test1@test.com")
