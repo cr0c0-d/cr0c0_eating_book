@@ -2,9 +2,12 @@ package me.croco.eatingBooks.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.croco.eatingBooks.domain.Article;
+import me.croco.eatingBooks.domain.ArticleTemplate;
 import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.ArticleAddRequest;
+import me.croco.eatingBooks.dto.ArticleUpdateRequest;
 import me.croco.eatingBooks.repository.ArticleRepository;
+import me.croco.eatingBooks.repository.ArticleTemplatesRepository;
 import me.croco.eatingBooks.repository.MemberRepository;
 import me.croco.eatingBooks.util.Authorities;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,15 +26,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.xml.transform.Result;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,6 +47,9 @@ class ArticleApiControllerTest {
 
     @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
+    private ArticleTemplatesRepository articleTemplatesRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -82,13 +84,10 @@ class ArticleApiControllerTest {
     }
 
     @BeforeEach
-    public void deleteArticlesAll() {
+    public void deleteAll() {
         articleRepository.deleteAll();
-    }
-
-    @BeforeEach
-    public void deleteMembersAll() {
         memberRepository.deleteAll();
+        articleTemplatesRepository.deleteAll();
     }
 
     public Article testArticle(Map<String, String> param) {
@@ -273,23 +272,158 @@ class ArticleApiControllerTest {
         result.andExpect(jsonPath("$.length()").value(3));
     }
 
+    @DisplayName("updateArticle : 글을 수정한다")
     @Test
-    void updateArticle() {
+    void updateArticle() throws Exception {
+        // Given
+        setLoginMember("user");
+        Article article = articleRepository.save(testArticle(Map.of()));
+        String newTitle = "newTitle";
+        String newContent = "newContent";
+        final String url = "/api/articles/";
+
+        ArticleUpdateRequest request = new ArticleUpdateRequest(newTitle, newContent, article.getWriteType(), article.getPublicYn());
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // When
+        ResultActions result = mockMvc.perform(put(url+article.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+        );
+
+        // Then
+        result.andExpect(status().isOk());
+
+        Article updatedArticle = articleRepository.findById(article.getId()).get();
+        assertThat(updatedArticle.getTitle()).isEqualTo(newTitle);
+        assertThat(updatedArticle.getContent()).isEqualTo(newContent);
     }
 
+    @DisplayName("deleteArticle : 글을 삭제한다.")
     @Test
-    void deleteArticle() {
+    void deleteArticle() throws Exception {
+        // Given
+        setLoginMember("user");
+        Article article = articleRepository.save(testArticle(Map.of()));
+        final String url = "/api/articles/";
+
+        // When
+        ResultActions result = mockMvc.perform(delete(url+article.getId()));
+
+        // Then
+        result.andExpect(status().isOk());
+
+        List<Article> articleList = articleRepository.findAll();
+        assertThat(articleList).isEmpty();
+
+
     }
 
+    @DisplayName("findTemplateByType : 유형별 템플릿 조회")
     @Test
-    void findTemplateByType() {
+    void findTemplateByType() throws Exception {
+        // Given
+        final String url = "/api/articles/templates/";
+        articleTemplatesRepository.save(ArticleTemplate.builder()
+                .type("B")
+                .num(1)
+                .content("test")
+                .build());
+        articleTemplatesRepository.save(ArticleTemplate.builder()
+                .type("A")
+                .num(1)
+                .content("test")
+                .build());
+
+        // When
+        ResultActions result = mockMvc.perform(get(url+"B").accept(MediaType.APPLICATION_JSON));
+
+        // Then
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.length()").value(1));
     }
 
+    @DisplayName("findPublicArticlesByIsbn : 도서별 공개글 목록 조회")
     @Test
-    void findAllArticlesByIsbn() {
+    void findAllArticlesByIsbn() throws Exception {
+        // Given
+        setLoginMember("user");
+        final String url = "/api/articles/book/";
+        Article isbn1Article = articleRepository.save(testArticle(Map.of("isbn", "isbn1")));
+        articleRepository.save(testArticle(Map.of("isbn", "isbn2")));
+
+        // When
+        ResultActions result = mockMvc.perform(get(url+isbn1Article.getIsbn())
+                .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // Then
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.length()").value(1));
+        result.andExpect(jsonPath("$[0].id").value(isbn1Article.getId()));
     }
 
+    @DisplayName("findArticlesByMemberLoginAdmin : 로그인 사용자가 관리자일 때 다른 유저의 글 목록 조회")
     @Test
-    void findPublicArticlesByMember() {
+    void findArticlesByMemberLoginAdmin() throws Exception {
+        // Given
+        setLoginMember("user1");
+        Long user1Id = loginMember.getId();
+        Article publicArticle = articleRepository.save(testArticle(Map.of("publicYn", "true")));
+        Article privateArticle = articleRepository.save(testArticle(Map.of("publicYn", "false")));
+
+        setLoginMember("admin");
+
+        final String url = "/api/articles/member/";
+
+        // When
+        ResultActions result = mockMvc.perform(get(url + user1Id).accept(MediaType.APPLICATION_JSON));
+
+        // Then
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.publicArticleList.length()").value(1));
+        result.andExpect(jsonPath("$.privateArticleList.length()").value(1));
+    }
+
+    @DisplayName("findArticlesByMemberLoginUser : 로그인 사용자가 관리자가 아닐 때일 때 다른 유저의 글 목록 조회")
+    @Test
+    void findArticlesByMemberLoginUser() throws Exception {
+        // Given
+        setLoginMember("user1");
+        Long user1Id = loginMember.getId();
+        Article publicArticle = articleRepository.save(testArticle(Map.of("publicYn", "true")));
+        Article privateArticle = articleRepository.save(testArticle(Map.of("publicYn", "false")));
+
+        setLoginMember("user2");
+
+        final String url = "/api/articles/member/";
+
+        // When
+        ResultActions result = mockMvc.perform(get(url + user1Id).accept(MediaType.APPLICATION_JSON));
+
+        // Then
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.publicArticleList.length()").value(1));
+        result.andExpect(jsonPath("$.privateArticleList").doesNotExist());
+    }
+
+    @DisplayName("findArticlesByMemberLoginSelf : 로그인 사용자가 관리자가 아닐 때일 때 자신의 글 목록 조회")
+    @Test
+    void findArticlesByMemberLoginSelf() throws Exception {
+        // Given
+        setLoginMember("user1");
+        Long user1Id = loginMember.getId();
+        Article publicArticle = articleRepository.save(testArticle(Map.of("publicYn", "true")));
+        Article privateArticle = articleRepository.save(testArticle(Map.of("publicYn", "false")));
+
+        final String url = "/api/articles/member/";
+
+        // When
+        ResultActions result = mockMvc.perform(get(url + user1Id).accept(MediaType.APPLICATION_JSON));
+
+        // Then
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.publicArticleList.length()").value(1));
+        result.andExpect(jsonPath("$.privateArticleList.length()").value(1));
     }
 }
