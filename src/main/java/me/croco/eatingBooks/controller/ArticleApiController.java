@@ -62,7 +62,7 @@ public class ArticleApiController {
 
     // 글 목록 조회
     @GetMapping("/api/articles")
-    public ResponseEntity<List<ArticleListResponse>> findAllArticles() {
+    public ResponseEntity<List<ArticleListResponse>> findAllPublicArticles() {
         List<Article> articleList = articleService.findPublicArticles();
 
         List<ArticleListResponse> articleResponseList = articleList

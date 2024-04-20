@@ -104,13 +104,17 @@ public class ArticleService {
         // 로그인 사용자가 관리자이거나 글 작성자일 때 true 반환
 
         // 로그인 상태인지 확인
-        boolean validToken = httpHeaderChecker.checkAuthorizationHeader(request);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null) {
+            boolean validToken = httpHeaderChecker.checkAuthorizationHeader(request);
 
-        if (!validToken) {   // 비로그인 상태
-            return false;
+            if (!validToken) {   // 비로그인 상태
+                return false;
+            }
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인 상태인 경우 로그인 사용자와 작성자 비교
         return targetMemberEmail.equals(authentication.getName());
