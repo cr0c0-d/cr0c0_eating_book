@@ -58,16 +58,15 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             member = (Member) authentication.getPrincipal();
         }
 
-        // 리프레시 토큰 생성 -> 저장 -> 쿠키에 저장
+        // 리프레시 토큰 생성 -> DB에 저장 -> 응답 쿠키에 저장
         String refreshToken = tokenProvider.generateToken(member, REFRESH_TOKEN_DURATION);
-        saveRefreshToken(member.getId(), refreshToken);
-        addRefreshTokenToCookie(request, response, refreshToken);
+        saveRefreshToken(member.getId(), refreshToken); // DB에 저장
+        addRefreshTokenToCookie(request, response, refreshToken);   // 응답 쿠키에 저장
 
         // 액세스 토큰 생성 -> 응답에 액세스 토큰 추가
         String accessToken = tokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
 
         Map<String, Object> userMap = new HashMap<>();
 
@@ -78,7 +77,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(userMap);
-
 
         response.getWriter().write(jsonResponse);
         response.getWriter().flush();
@@ -100,7 +98,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private void addRefreshTokenToCookie(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
         int cookieMaxAge = (int) REFRESH_TOKEN_DURATION.toSeconds();
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);	// 기존 리프레시 토큰 삭제
-        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);	// 새로운 리프레시 토큰 저장
+        CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge, true);	// 새로운 리프레시 토큰 저장
     }
 
     // 인증 관련 설정값, 쿠키 제거

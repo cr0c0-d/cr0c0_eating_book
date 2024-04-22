@@ -12,11 +12,25 @@ import java.util.Base64;
 public class CookieUtil {
 
     // 요청값(이름, 값, 만료기간)으로 쿠키 추가
-    public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
+    public static void addCookie(HttpServletResponse response, String name, String value, int maxAge, boolean httpOnly) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");    // 쿠키가 모든 경로에서 사용될 수 있다.
         cookie.setMaxAge(maxAge);
+        cookie.setHttpOnly(httpOnly);
         response.addCookie(cookie);
+    }
+
+    public static String getCookie(String name, HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if(cookies == null) {
+            return null;
+        }
+        for(Cookie cookie : cookies) {
+            if(cookie.getName().equals(name)) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 
     // 쿠키의 이름을 받아 해당 쿠키 삭제
