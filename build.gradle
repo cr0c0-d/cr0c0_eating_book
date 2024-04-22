@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -74,6 +75,8 @@ dependencies {
 test {
     useJUnitPlatform()
     systemProperty "jasypt.encryptor.password", System.getProperties().get("jasypt.encryptor.password")
+    systemProperty "eatingbooks.croco.front", System.getProperties().get("eatingbooks.croco.front")
+    systemProperty "spring.profiles.active", "test"
 }
 
 // Q클래스 생성을 위한 설정 추가
