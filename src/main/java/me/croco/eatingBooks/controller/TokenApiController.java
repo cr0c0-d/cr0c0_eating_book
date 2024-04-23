@@ -17,13 +17,9 @@ public class TokenApiController {
     private final TokenService tokenService;
 
     @PostMapping("/api/token")
-    public ResponseEntity<AccessTokenCreateResponse> createNewAccessToken(
-            //@RequestBody AccessTokenCreateRequest request,
-            HttpServletRequest request) {
+    public ResponseEntity<AccessTokenCreateResponse> createNewAccessToken(HttpServletRequest request) {
         String refresh_token = CookieUtil.getCookie(CustomAuthenticationSuccessHandler.REFRESH_TOKEN_COOKIE_NAME, request);
-        //String newAccessToken = tokenService.createNewAccessToken(request.getRefreshToken());
         String newAccessToken = tokenService.createNewAccessToken(refresh_token);
-
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new AccessTokenCreateResponse(newAccessToken));

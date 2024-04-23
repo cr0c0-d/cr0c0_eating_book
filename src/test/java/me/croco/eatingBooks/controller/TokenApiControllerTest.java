@@ -1,7 +1,8 @@
-package me.croco.eatingBooks.api;
+package me.croco.eatingBooks.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwt;
+import jakarta.servlet.http.Cookie;
 import me.croco.eatingBooks.config.jwt.JwtFactory;
 import me.croco.eatingBooks.config.jwt.JwtProperties;
 import me.croco.eatingBooks.domain.Member;
@@ -17,11 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.Duration;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class TokenApiControllerTest {
 
     @Autowired
@@ -61,7 +65,7 @@ class TokenApiControllerTest {
     @DisplayName("createNewAccessToken : 새로운 액세스 토큰 발급")
     @Test
     public void createNewAccessToken() throws Exception {
-        // given
+        // Given
         final String url = "/api/token";
 
         Member testMember = memberRepository.save(
@@ -80,16 +84,15 @@ class TokenApiControllerTest {
 
         refreshTokenRepository.save(new RefreshToken(testMember.getId(), refreshToken));
 
-        AccessTokenCreateRequest request = new AccessTokenCreateRequest();
-        request.setRefreshToken(refreshToken);
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setPath("/");
+        cookie.setMaxAge((int) Duration.ofDays(14).toSeconds());
+        cookie.setHttpOnly(true);
 
-        final String requestBody = objectMapper.writeValueAsString(request);
-
-        // when
+        // When
         ResultActions resultActions = mockMvc.perform(
                 post(url)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(requestBody)
+                        .cookie(cookie)
         );
 
         // then
