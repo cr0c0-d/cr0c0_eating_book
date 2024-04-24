@@ -76,6 +76,8 @@ apiKey:
   aladin: ENC(qlX7ujIj5Q43k1Z6WOB9Rfnm5swpp4BVOAJKsaEkt+iQzzg+X0k85g==)
   imgBB: ENC(3COeQD3IOuvV9sLL+5enqxsw4xa6qSb1w40h9o292kD8V3wEayy2c70idONz7LejasdFT3AKJuY=)
 
-
+aws:
+  access_key: ENC(9wD9vfQJIT1AXWNKBgsvjRqiiOUUudzn4SlbwpAx+LXy+5Hc8TLX3Q==)
+  secret_key: ENC(TzFpH8P6hW0PV/Xz1GTAUAT/2XmTI/wuhehfgpUdpCbVC8o1RkuLlRBcNbEhRVLNPGFMyg5nHuUWzLrKtwO2fQ==)
 
 

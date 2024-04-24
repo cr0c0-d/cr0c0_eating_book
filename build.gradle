@@ -72,6 +72,10 @@ dependencies {
 
 }
 
+jar {   // plain.jar 파일 생성x
+    enabled = false
+}
+
 test {
     useJUnitPlatform()
     systemProperty "jasypt.encryptor.password", System.getProperties().get("jasypt.encryptor.password")
