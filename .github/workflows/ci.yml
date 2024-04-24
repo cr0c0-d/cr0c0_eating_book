@@ -23,6 +23,10 @@ jobs:
 
       - name: Test with Gradle
         run: ./gradlew test -Dspring.profiles.active=test --info
+        env:
+          JASYPT_ENCRYPTOR_PASSWORD: ${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
 
       - name: Build with Gradle
         run: ./gradlew clean build
+        env:
+          JASYPT_ENCRYPTOR_PASSWORD: ${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
