@@ -68,18 +68,23 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        Map<String, Object> userMap = new HashMap<>();
+        if (authentication.getPrincipal() instanceof OAuth2User) {
+            getRedirectStrategy().sendRedirect(request, response, getTargetUrl(accessToken));
+        } else {
+            Map<String, Object> userMap = new HashMap<>();
 
-        userMap.put("accessToken", accessToken);
-        userMap.put("nickname", member.getNickname()); // 닉네임
-        userMap.put("id", "" + member.getId()); // Long 타입 아이디
-        userMap.put("role", member.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().get(0)); // 권한
+            userMap.put("accessToken", accessToken);
+            userMap.put("nickname", member.getNickname()); // 닉네임
+            userMap.put("id", "" + member.getId()); // Long 타입 아이디
+            userMap.put("role", member.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().get(0)); // 권한
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(userMap);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonResponse = objectMapper.writeValueAsString(userMap);
 
-        response.getWriter().write(jsonResponse);
-        response.getWriter().flush();
+            response.getWriter().write(jsonResponse);
+            response.getWriter().flush();
+        }
+
 
         // 인증 관련 설정값, 쿠키 제거
         clearAuthenticationAttributes(request, response);
