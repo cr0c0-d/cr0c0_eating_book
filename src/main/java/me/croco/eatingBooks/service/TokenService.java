@@ -3,6 +3,7 @@ package me.croco.eatingBooks.service;
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.config.jwt.TokenProvider;
 import me.croco.eatingBooks.domain.Member;
+import me.croco.eatingBooks.dto.MemberByTokenResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -30,6 +31,13 @@ public class TokenService {
         Member member = memberService.findById(userId);
         
         return tokenProvider.generateToken(member, Duration.ofHours(2));    // 2시간짜리 토큰 발급
+    }
+
+    // 액세스 토큰을 받아 유저 정보 반환
+    public MemberByTokenResponse findMemberByAccessToken(String accessToken) {
+        Long id = tokenProvider.getUserId(accessToken);
+        Member member = memberService.findById(id);
+        return new MemberByTokenResponse(member);
     }
 
 }
