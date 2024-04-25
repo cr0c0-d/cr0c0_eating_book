@@ -6,6 +6,7 @@ import me.croco.eatingBooks.dto.MemberAddRequest;
 import me.croco.eatingBooks.dto.MemberUpdateRequest;
 import me.croco.eatingBooks.repository.MemberRepository;
 import me.croco.eatingBooks.util.Authorities;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,7 +26,8 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
-    private final String DEFAULT_PROFILE_IMAGE = "https://i.ibb.co/LzfM6Mx/member1712982423627.jpg";
+    @Value("default.profileImg")
+    private String DEFAULT_PROFILE_IMAGE;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
