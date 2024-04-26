@@ -12,6 +12,7 @@ import me.croco.eatingBooks.domain.RefreshToken;
 import me.croco.eatingBooks.repository.RefreshTokenRepository;
 import me.croco.eatingBooks.service.MemberService;
 import me.croco.eatingBooks.util.CookieUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -20,11 +21,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -38,7 +36,10 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     // 액세스 토큰의 유효기간
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2);
 
-    public static final String REDIRECT_PATH = "http://localhost:3000/search";
+    @Value("${eatingbooks.croco.front}")
+    private String frontOrigin;
+
+    public  String REDIRECT_PATH = "/search";
 
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -114,7 +115,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     // 액세스 토큰을 패스에 추가
     private String getTargetUrl(String token) {
-        return UriComponentsBuilder.fromUriString(REDIRECT_PATH)
+        return UriComponentsBuilder.fromUriString(frontOrigin+REDIRECT_PATH)
                 .queryParam("token", token)
                 .build()
                 .toUriString();
