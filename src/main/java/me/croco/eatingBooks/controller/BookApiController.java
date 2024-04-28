@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.api.aladin.service.AladinApiService;
 import me.croco.eatingBooks.api.naver.service.NaverBooksApiService;
 import me.croco.eatingBooks.domain.Book;
+import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.BookFindRequest;
 import me.croco.eatingBooks.dto.BookFindResponse;
+import me.croco.eatingBooks.dto.BooksByMemberResponse;
 import me.croco.eatingBooks.service.BookService;
+import me.croco.eatingBooks.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,7 @@ import java.util.List;
 public class BookApiController {
 
     private final BookService bookApiService;
+    private final MemberService memberService;
     //private final NaverBooksApiService bookApiService;
 
     @PostMapping("/api/books")
@@ -47,5 +51,12 @@ public class BookApiController {
     public ResponseEntity<List<Book>> findBestAfterArticle() {
         return ResponseEntity.ok()
                 .body(bookApiService.findBestAfterArticle());
+    }
+
+    @GetMapping("/api/books/member/{id}")
+    public ResponseEntity<BooksByMemberResponse> findBooksByMember(@PathVariable Long id) {
+        Member member = memberService.findById(id);
+        return ResponseEntity.ok()
+                .body(bookApiService.findBooksByMember(member.getEmail()));
     }
 }

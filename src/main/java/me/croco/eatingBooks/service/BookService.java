@@ -2,23 +2,17 @@ package me.croco.eatingBooks.service;
 
 import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.api.aladin.service.AladinApiService;
-import me.croco.eatingBooks.api.naver.service.NaverBooksApiService;
 import me.croco.eatingBooks.domain.Book;
 import me.croco.eatingBooks.dto.BookFindRequest;
 import me.croco.eatingBooks.dto.BookFindResponse;
+import me.croco.eatingBooks.dto.BooksByMemberResponse;
 import me.croco.eatingBooks.repository.ArticleRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,5 +70,29 @@ public class BookService {
 
         return books;
     }
+
+    public BooksByMemberResponse findBooksByMember(String email) {
+        List<String> doneList = articleRepository.findDoneReadingIsbnListByMemberEmail(email);
+        List<Book> doneBooks = new ArrayList<>();
+
+        doneList.forEach(isbn ->
+                doneBooks.addAll(
+                        bookApiService.findBook(isbn).getItem()
+                                .stream().map(Book::new).toList()
+                )
+        );
+
+        List<String> upcomingList = articleRepository.findUpcomingReadingIsbnListByMemberEmail(email, doneList);
+        List<Book> upcomingBooks = new ArrayList<>();
+        upcomingList.forEach(isbn ->
+                upcomingBooks.addAll(
+                        bookApiService.findBook(isbn).getItem()
+                                .stream().map(Book::new).toList()
+                )
+        );
+        return new BooksByMemberResponse(upcomingBooks, doneBooks);
+    }
+
+
 
 }
