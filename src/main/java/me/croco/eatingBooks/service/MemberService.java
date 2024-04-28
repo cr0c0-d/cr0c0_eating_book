@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.croco.eatingBooks.domain.Member;
 import me.croco.eatingBooks.dto.MemberAddRequest;
 import me.croco.eatingBooks.dto.MemberUpdateRequest;
+import me.croco.eatingBooks.repository.ArticleRepository;
 import me.croco.eatingBooks.repository.MemberRepository;
 import me.croco.eatingBooks.util.Authorities;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +26,9 @@ import java.util.List;
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+    private final ArticleRepository articleRepository;
 
-    @Value("default.profileImg")
+    @Value("${default.profileImg}")
     private String DEFAULT_PROFILE_IMAGE;
 
     @Override
@@ -69,21 +71,22 @@ public class MemberService implements UserDetailsService {
     public Long updateMember(MemberUpdateRequest request) {
         Member member = memberRepository.findById(request.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 id : " + request.getId()));
 
-        // 비밀번호를 변경했다면
-        if(!request.getPassword().equals("")) {
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-            member.updatePassword(bCryptPasswordEncoder.encode(request.getPassword()));
-        }
-
-        // 닉네임을 변경했다면
-        if(!member.getNickname().equals(request.getNickname())) {
-            member.update(request.getNickname());
-        }
-
-        // 프로필 이미지를 변경했다면
-        if(!member.getProfileImg().equals(request.getProfileImg())) {
-            member.updateProfileImg(request.getProfileImg());
-        }
+        member.update(request);
+//        // 비밀번호를 변경했다면
+//        if(!request.getPassword().isEmpty()) {
+//            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+//            member.updatePassword(bCryptPasswordEncoder.encode(request.getPassword()));
+//        }
+//
+//        // 닉네임을 변경했다면
+//        if(!member.getNickname().equals(request.getNickname())) {
+//            member.update(request.getNickname());
+//        }
+//
+//        // 프로필 이미지를 변경했다면
+//        if(!member.getProfileImg().equals(request.getProfileImg())) {
+//            member.updateProfileImg(request.getProfileImg());
+//        }
 
         return member.getId();
     }

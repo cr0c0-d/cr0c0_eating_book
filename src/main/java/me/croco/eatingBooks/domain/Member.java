@@ -5,12 +5,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.croco.eatingBooks.dto.MemberUpdateRequest;
 import me.croco.eatingBooks.util.Authorities;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -62,19 +64,24 @@ public class Member implements UserDetails {
     }
 
     // 사용자 닉네임 변경
-    public Member update(String nickname) {
-        this.nickname = nickname;
+    public Member update(MemberUpdateRequest updateInfo) {
+        this.profileImg = updateInfo.getProfileImg();
+        this.nickname = updateInfo.getNickname();
+        if(!updateInfo.getPassword().isEmpty()) {
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            this.password = bCryptPasswordEncoder.encode(updateInfo.getPassword());
+        }
         return this;
     }
-    public Member updateProfileImg(String profileImg) {
-        this.profileImg = profileImg;
-        return this;
-    }
-
-    public Member updatePassword(String password) {
-        this.password = password;
-        return this;
-    }
+//    public Member updateProfileImg(String profileImg) {
+//        this.profileImg = profileImg;
+//        return this;
+//    }
+//
+//    public Member updatePassword(String password) {
+//        this.password = password;
+//        return this;
+//    }
 
     @Override
     public String getUsername() {
