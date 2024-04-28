@@ -70,4 +70,12 @@ public class ArticleQueryDSLRepositoryImpl implements ArticleQueryDSLRepository 
                 .orderBy(qArticle.createdAt.desc())
                 .fetch();
     }
+
+    @Override
+    public void updateAllWriterByMemberEmail(Long id, String email) {
+        jpaQueryFactory.update(qArticle)
+                .set(qArticle.writer, String.valueOf(id))
+                .where(qArticle.writer.eq(email))
+                .execute();
+    }
 }

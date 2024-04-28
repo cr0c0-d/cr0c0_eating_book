@@ -7,4 +7,6 @@ import java.util.List;
 public interface MemberQueryDslRepository {
 
     public List<Member> findAllOrderByCreatedAtDesc();
+
+    void updateMemberStateDelete(Long id);
 }

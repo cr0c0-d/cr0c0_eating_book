@@ -13,4 +13,6 @@ public interface ArticleQueryDSLRepository {
     List<String> findUpcomingReadingIsbnListByMemberEmail(String email, List<String> doneIsbnList);
 
     List<String> findDoneReadingIsbnListByMemberEmail(String email);
+
+    void updateAllWriterByMemberEmail(Long id, String email);
 }

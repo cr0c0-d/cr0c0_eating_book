@@ -90,4 +90,13 @@ public class MemberService implements UserDetailsService {
 
         return member.getId();
     }
+
+    public void deleteMember(Long id) {
+        Member member = findById(id);
+        // 작성한 모든 글 작성자 정보 변경
+        articleRepository.updateAllWriterByMemberEmail(member.getId(), member.getEmail());
+
+        // 회원정보 id 빼고 모두 수정
+        memberRepository.updateMemberStateDelete(id);
+    }
 }

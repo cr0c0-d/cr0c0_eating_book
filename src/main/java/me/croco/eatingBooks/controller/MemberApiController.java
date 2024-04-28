@@ -82,6 +82,13 @@ public class MemberApiController {
                 .build();
     }
 
+    @DeleteMapping("/api/members/{id}")
+    public ResponseEntity deleteMember(@PathVariable Long id) {
+        memberService.deleteMember(id);
+        return ResponseEntity.ok()
+                .build();
+    }
+
 //    @GetMapping("/logout")
 //    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
 //        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
