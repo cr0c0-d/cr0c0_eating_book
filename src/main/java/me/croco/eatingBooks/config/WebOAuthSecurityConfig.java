@@ -58,17 +58,12 @@ public class WebOAuthSecurityConfig {
                                         "/signup", "/login", // 로그인
                                         "/api/token", // 토큰 발급
                                         "/api/token/**", // 토큰 하위
-//                                        "/api/books", // 책 검색
-//                                        "/api/books/{id}",  // 책 상세 정보 조회
                                         "/api/books",   //책 검색
                                         "/api/books/**",    // 책 하위 API
                                         "/api/articles" // 글 목록 조회
-//                                        "/api/articles/book/{isbn}", // 도서별 글 조회
-//                                        "/api/articles/member/{id}" // 사용자별 글 조회
                                 ).permitAll()
 
                                 .requestMatchers(
-                                        //new AntPathRequestMatcher("/api/articles/{id}", HttpMethod.GET.name()), // 글 조회만 허용
                                         new AntPathRequestMatcher("/api/articles/**", HttpMethod.GET.name()), // GET 요청은 모두 허용
                                         new AntPathRequestMatcher("/api/members/", HttpMethod.POST.name())  // 회원가입만 허용
                                 ).permitAll()
