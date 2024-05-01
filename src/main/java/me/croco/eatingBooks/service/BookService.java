@@ -39,17 +39,15 @@ public class BookService {
      * 식전문의 수가 많은 책의 ISBN을 리스트로 반환
      */
     public List<Book> findBestBeforeArticle() {
-        Pageable topFive = PageRequest.of(0, 5);
-        List<Object[]> isbnList = articleRepository.findBestIsbnBeforeArticle(topFive);
+        List<String> isbnList = articleRepository.findBestIsbnBeforeArticle();
         List<Book> books = new ArrayList<>();
 
         isbnList.forEach((isbn)->
                 books.addAll(
-                        bookApiService.findBook((String)isbn[0]).getItem()
+                        bookApiService.findBook(isbn).getItem()
                                 .stream().map(Book::new).toList()
                 )
         );
-
         return books;
     }
 
@@ -57,16 +55,14 @@ public class BookService {
      * 식후문의 수가 많은 책의 ISBN을 리스트로 반환
      */
     public List<Book> findBestAfterArticle() {
-        Pageable topFive = PageRequest.of(0, 5);
-        List<Object[]> isbnList = articleRepository.findBestIsbnAfterArticle(topFive);
+        List<String> isbnList = articleRepository.findBestIsbnAfterArticle();
         List<Book> books = new ArrayList<>();
 
-        isbnList.forEach((isbn)->
+        isbnList.forEach((isbn) ->
                 books.addAll(
-                        bookApiService.findBook((String)isbn[0]).getItem()
+                        bookApiService.findBook(isbn).getItem()
                                 .stream().map(Book::new).toList()
-                )
-        );
+                ));
 
         return books;
     }

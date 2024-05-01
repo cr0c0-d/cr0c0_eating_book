@@ -1,10 +1,15 @@
 package me.croco.eatingBooks.repository;
 
+import com.querydsl.core.Tuple;
 import me.croco.eatingBooks.domain.Article;
 
 import java.util.List;
 
 public interface ArticleQueryDSLRepository {
+
+    List<String> findBestIsbnBeforeArticle();
+
+    List<String> findBestIsbnAfterArticle();
 
     List<Article> findPublicArticlesByIsbnOrderByCreatedAtDesc(String isbn);
 

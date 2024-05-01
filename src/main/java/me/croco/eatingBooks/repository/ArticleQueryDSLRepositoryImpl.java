@@ -1,5 +1,6 @@
 package me.croco.eatingBooks.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import me.croco.eatingBooks.domain.Article;
@@ -19,6 +20,28 @@ public class ArticleQueryDSLRepositoryImpl implements ArticleQueryDSLRepository 
     private final QMember qMember = QMember.member;
 
     private final QArticle qArticle = QArticle.article;
+
+    @Override
+    public List<String> findBestIsbnBeforeArticle() {
+        return jpaQueryFactory.select(qArticle.isbn)
+                .from(qArticle)
+                .where(qArticle.articleType.eq("B"))
+                .groupBy(qArticle.isbn)
+                .orderBy(qArticle.count().desc())
+                .limit(5)
+                .fetch();
+    }
+
+    @Override
+    public List<String> findBestIsbnAfterArticle() {
+        return jpaQueryFactory.select(qArticle.isbn)
+                .from(qArticle)
+                .where(qArticle.articleType.eq("A"))
+                .groupBy(qArticle.isbn)
+                .orderBy(qArticle.count().desc())
+                .limit(5)
+                .fetch();
+    }
 
     @Override
     public List<Article> findPublicArticlesByIsbnOrderByCreatedAtDesc(String isbn) {
